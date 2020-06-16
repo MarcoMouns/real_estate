@@ -1,33 +1,48 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:realestate/splashScreen.dart';
 
-void main() {
-  runApp(MyApp());
+import 'I10n/AppLanguage.dart';
+import 'I10n/app_localizations.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  AppLanguage appLanguage = AppLanguage();
+  await appLanguage.fetchLocale();
+  runApp(MyApp(appLanguage: appLanguage));
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final AppLanguage appLanguage;
+  MyApp({this.appLanguage});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: SplashScreen(),
+    return ChangeNotifierProvider(
+      create: (_) => appLanguage,
+      child: Consumer<AppLanguage>(builder: (context, model, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate
+          ],
+          supportedLocales: [
+            Locale("en", "US"),
+            Locale("ar", ""),
+          ],
+          locale: model.appLocal,
+          title: 'نفذ',
+          //theme: appTheme,
+          home: SplashScreen(),
+        );
+      }),
     );
   }
 }
