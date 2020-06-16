@@ -1,3 +1,11 @@
 {
-  "skip": "تخطى"
+  "skip": "skip",
+  "login": "login",
+  "forgetPassword": "forgetPassword",
+  "doNotHaveAccount": "don`t have an account? ",
+  "registerNow": "register now",
+  "phoneNumber" : "phone number",
+  "password": "password",
+  "phoneEmptyError": "please enter your phone",
+  "passwordEmptyError" : "please enter the password"
 }

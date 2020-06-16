@@ -39,7 +39,15 @@ class MyApp extends StatelessWidget {
           ],
           locale: model.appLocal,
           title: 'نفذ',
-          //theme: appTheme,
+          theme: ThemeData(
+            textTheme: Theme.of(context).textTheme.apply(
+              fontFamily: 'coconext',
+              fontSizeFactor: 1.3,
+              bodyColor: Color(0xFF555555),
+              displayColor: Color(0xFF555555),
+              decorationColor: Color(0xFF555555),
+            ),
+          ),
           home: SplashScreen(),
         );
       }),

@@ -1,3 +1,11 @@
 {
-  "skip": "skip"
+  "skip": "تخطي",
+  "login": "تسجيل دخول",
+  "forgetPassword": "هل نسيت كلمة المرور",
+  "doNotHaveAccount": "ليس لديك حساب ؟ ",
+  "registerNow": "سجل الان",
+  "phoneNumber" : "رقم الجوال",
+  "password": "كلمة المرور",
+  "phoneEmptyError": "من فضلك ادخل رقم الهاتف",
+  "passwordEmptyError" : "من فضلك ادخل كلمة المرور"
 }
