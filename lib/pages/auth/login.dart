@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/I10n/app_localizations.dart';
-import 'package:realestate/auth/phone_check.dart';
-import 'package:realestate/auth/registration.dart';
+import 'package:realestate/pages/auth/phone_check.dart';
+import 'package:realestate/pages/auth/registration.dart';
 
 class Login extends StatefulWidget {
   @override

@@ -11,5 +11,11 @@
   "nameEmptyError" : "من فضلك ادخل الاسم",
   "register" : "تسجيل",
   "name": "الاسم",
-  "sendOTP" : "ارسال رمز التحقق"
+  "sendOTP" : "ارسال رمز التحقق",
+  "otpNote" : "الرجاء ادخال رمز التحقق المرسل لجوالك",
+  "check": "تحقق",
+  "otpNotSend" : "لم يصلك الرمز ؟ ",
+  "sendAgain": "ارسل مرة اخرى",
+  "continue": "استمرار",
+  "forgetPasswordNote": "استعادة كلمة المرور"
 }

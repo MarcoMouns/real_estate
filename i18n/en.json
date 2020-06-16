@@ -11,5 +11,11 @@
   "nameEmptyError" : "please enter your name",
   "register" : "sign up",
   "name": "username",
-  "sendOTP" : "send otp code"
+  "sendOTP" : "send otp code",
+  "otpNote" : "please enter the otp that we send you",
+  "check": "check",
+  "otpNotSend" : "you don`t get the otp ?",
+  "sendAgain": "send again",
+  "continue": "continue",
+  "forgetPasswordNote": "forget password"
 }

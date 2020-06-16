@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/I10n/app_localizations.dart';
-import 'package:realestate/auth/registration.dart';
 
-class PhoneCheck extends StatefulWidget {
+class ChangePassword extends StatefulWidget {
   @override
-  _PhoneCheckState createState() => _PhoneCheckState();
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _PhoneCheckState extends State<PhoneCheck> {
+class _ChangePasswordState extends State<ChangePassword> {
 
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
-  FocusNode phoneNode = FocusNode();
+  FocusNode passwordNode = FocusNode();
 
-  bool phoneEmptyError = false;
+  bool passwordEmptyError = false;
 
   unFocus(){
-    phoneNode.unfocus();
+    passwordNode.unfocus();
   }
 
   validate(){
-    print('phoneController = ${phoneController.text.isEmpty}');
-    if(phoneController.text.isEmpty){
-      phoneEmptyError = true;
+    print('passwordController = ${passwordController.text}');
+    if(passwordController.text.isEmpty){
+      passwordEmptyError = true;
     }
-    else phoneEmptyError = false;
+    else passwordEmptyError = false;
     setState(() {});
-    if(phoneController.text.isNotEmpty){
+    if(passwordController.text.isNotEmpty){
 
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -41,38 +39,31 @@ class _PhoneCheckState extends State<PhoneCheck> {
           child: Column(
             children: <Widget>[
               Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: null,
-                          child: Text("${AppLocalizations.of(context).translate('skip')}"),
-                        ),
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Image.asset('assets/icons/back.png',scale: 4,),
-                        )
-                      ],
-                    ),
-                  )
+                flex: 1,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                    child: Image.asset('assets/icons/back.png',scale: 4,),
+                  ),
+                ),
               ),
               Expanded(
                 flex: 5,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Image.asset('assets/images/phone.png',scale: 3.5,),
+                      Image.asset('assets/images/lock.png',scale: 3.5,),
+                      Padding(padding: EdgeInsets.only(top: 20)),
+                      Text("${AppLocalizations.of(context).translate('forgetPasswordNote')}"),
                       Padding(padding: EdgeInsets.only(top: 40)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: TextField(
-                          controller: phoneController,
-                          focusNode: phoneNode,
-                          keyboardType: TextInputType.number,
+                          controller: passwordController,
+                          focusNode: passwordNode,
                           decoration: InputDecoration(
                               filled: true,
                               focusColor: Color(0xFFF3F3F3),
@@ -96,8 +87,8 @@ class _PhoneCheckState extends State<PhoneCheck> {
                           ),
                         ),
                       ),
-                      phoneEmptyError?
-                      Text("${"${AppLocalizations.of(context).translate('phoneEmptyError')}"}",style: TextStyle(color:
+                      passwordEmptyError?
+                      Text("${"${AppLocalizations.of(context).translate('passwordEmptyError')}"}",style: TextStyle(color:
                       Colors.red),):Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       InkWell(
@@ -110,34 +101,13 @@ class _PhoneCheckState extends State<PhoneCheck> {
                               borderRadius: BorderRadius.all(Radius.circular(20))
                           ),
                           alignment: Alignment.center,
-                          child: Text("${AppLocalizations.of(context).translate('sendOTP')}",style: TextStyle(color: Colors.white),),
+                          child: Text("${AppLocalizations.of(context).translate('continue')}",style: TextStyle(color: Colors.white),),
                         ),
                       ),
-                      Padding(padding: EdgeInsets.only(top: 20)),
-//                      InkWell(
-//                        onTap: null,
-//                        child: Text("${AppLocalizations.of(context).translate("forgetPassword")}"),
-//                      )
                     ],
                   ),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Registration(),)
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('doNotHaveAccount')}"),
-                      Text("${AppLocalizations.of(context).translate('registerNow')}",style: TextStyle(color: Color(0xFFF99743)),),
-                    ],
-                  ),
-                ),
-              )
             ],
           ),
         ),
