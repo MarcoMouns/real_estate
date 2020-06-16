@@ -10,5 +10,6 @@
   "passwordEmptyError" : "please enter the password",
   "nameEmptyError" : "please enter your name",
   "register" : "sign up",
-  "name": "username"
+  "name": "username",
+  "sendOTP" : "send otp code"
 }

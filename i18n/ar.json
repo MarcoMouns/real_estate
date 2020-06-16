@@ -10,5 +10,6 @@
   "passwordEmptyError" : "من فضلك ادخل كلمة المرور",
   "nameEmptyError" : "من فضلك ادخل الاسم",
   "register" : "تسجيل",
-  "name": "الاسم"
+  "name": "الاسم",
+  "sendOTP" : "ارسال رمز التحقق"
 }

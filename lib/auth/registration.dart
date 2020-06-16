@@ -56,25 +56,25 @@ class _RegistrationState extends State<Registration> {
           child: Column(
             children: <Widget>[
               Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: null,
-                        child: Text("${AppLocalizations.of(context).translate('skip')}"),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Image.asset('assets/icons/back.png',scale: 4,),
-                      )
-                    ],
-                  ),
-                )
-                ),
+                  flex: 1,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        InkWell(
+                          onTap: null,
+                          child: Text("${AppLocalizations.of(context).translate('skip')}"),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Image.asset('assets/icons/back.png',scale: 4,),
+                        )
+                      ],
+                    ),
+                  )
+              ),
               Expanded(
                 flex: 5,
                 child: SingleChildScrollView(
