@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 
-class Login extends StatefulWidget {
+class Registration extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _RegistrationState createState() => _RegistrationState();
 }
 
-class _LoginState extends State<Login> {
+class _RegistrationState extends State<Registration> {
 
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   FocusNode phoneNode = FocusNode();
   FocusNode passwordNode = FocusNode();
+  FocusNode nameNode = FocusNode();
 
   bool phoneEmptyError = false;
   bool passwordEmptyError = false;
+  bool nameEmptyError = false;
 
   unFocus(){
     phoneNode.unfocus();
     passwordNode.unfocus();
+    nameNode.unfocus();
   }
 
   validate(){
@@ -33,6 +37,10 @@ class _LoginState extends State<Login> {
       passwordEmptyError = true;
     }
     else passwordEmptyError = false;
+    if(nameController.text.isEmpty){
+      nameEmptyError = true;
+    }
+    else nameEmptyError = false;
     setState(() {});
     if(passwordController.text.isNotEmpty && phoneController.text.isNotEmpty){
 
@@ -49,16 +57,24 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: InkWell(
-                  onTap: null,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.topRight,
-                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                    child: Text("${AppLocalizations.of(context).translate('skip')}"),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: null,
+                        child: Text("${AppLocalizations.of(context).translate('skip')}"),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Image.asset('assets/icons/back.png',scale: 4,),
+                      )
+                    ],
                   ),
+                )
                 ),
-              ),
               Expanded(
                 flex: 5,
                 child: SingleChildScrollView(
@@ -66,6 +82,38 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       Image.asset('assets/images/profile.png',scale: 3.5,),
                       Padding(padding: EdgeInsets.only(top: 40)),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: TextField(
+                          controller: nameController,
+                          focusNode: nameNode,
+                          decoration: InputDecoration(
+                              filled: true,
+                              focusColor: Color(0xFFF3F3F3),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 25,
+                                vertical: 15,
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Colors.blue)
+                              ),
+                              hintText: "${AppLocalizations.of(context).translate('name')}"
+                          ),
+                        ),
+                      ),
+                      nameEmptyError?
+                      Text("${"${AppLocalizations.of(context).translate('nameEmptyError')}"}",style: TextStyle(color:
+                      Colors.red),):Container(),
+                      Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: TextField(
@@ -128,8 +176,8 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       passwordEmptyError?
-                          Text("${"${AppLocalizations.of(context).translate('passwordEmptyError')}"}",style: TextStyle(color:
-                          Colors.red)):Container(),
+                      Text("${"${AppLocalizations.of(context).translate('passwordEmptyError')}"}",style: TextStyle(color:
+                      Colors.red)):Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       InkWell(
                         onTap: () => validate(),
@@ -141,32 +189,13 @@ class _LoginState extends State<Login> {
                               borderRadius: BorderRadius.all(Radius.circular(20))
                           ),
                           alignment: Alignment.center,
-                          child: Text("${AppLocalizations.of(context).translate('login')}",style: TextStyle(color: Colors.white),),
+                          child: Text("${AppLocalizations.of(context).translate('register')}",style: TextStyle(color: Colors.white),),
                         ),
                       ),
-                      Padding(padding: EdgeInsets.only(top: 20)),
-                      InkWell(
-                        onTap: null,
-                        child: Text("${AppLocalizations.of(context).translate("forgetPassword")}"),
-                      )
                     ],
                   ),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: null,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('doNotHaveAccount')}"),
-                      Text("${AppLocalizations.of(context).translate('registerNow')}",style: TextStyle(color: Color(0xFFF99743)),),
-                    ],
-                  ),
-                ),
-              )
             ],
           ),
         ),

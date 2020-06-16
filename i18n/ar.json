@@ -7,5 +7,8 @@
   "phoneNumber" : "رقم الجوال",
   "password": "كلمة المرور",
   "phoneEmptyError": "من فضلك ادخل رقم الهاتف",
-  "passwordEmptyError" : "من فضلك ادخل كلمة المرور"
+  "passwordEmptyError" : "من فضلك ادخل كلمة المرور",
+  "nameEmptyError" : "من فضلك ادخل الاسم",
+  "register" : "تسجيل",
+  "name": "الاسم"
 }

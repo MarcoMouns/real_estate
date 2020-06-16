@@ -7,5 +7,8 @@
   "phoneNumber" : "phone number",
   "password": "password",
   "phoneEmptyError": "please enter your phone",
-  "passwordEmptyError" : "please enter the password"
+  "passwordEmptyError" : "please enter the password",
+  "nameEmptyError" : "please enter your name",
+  "register" : "sign up",
+  "name": "username"
 }
