@@ -25,5 +25,12 @@
   "aboutApp": "about app",
   "callUs": "call us",
   "setting": "setting",
-  "search": "search"
+  "search": "search",
+  "currentLocation": "current location",
+  "bedroomNumber": "beds",
+  "bathroomNumber": "bath",
+  "price": "price",
+  "adDurationSwitch": "ads during the last 2 weeks only",
+  "accept": "ok",
+  "back": "cancel"
 }

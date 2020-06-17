@@ -25,5 +25,12 @@
   "aboutApp": "عن التطبيق",
   "callUs": "اتصل بنا",
   "setting": "الاعدادات",
-  "search": "بحث"
+  "search": "بحث",
+  "currentLocation": "موقع الخريطة الحالي",
+  "bedroomNumber": "عدد الغرف",
+  "bathroomNumber": "دورات المياة",
+  "price": "السعر",
+  "adDurationSwitch": "الاعلانات خلال اسبوعين فقط",
+  "accept": "موافق",
+  "back": "رجوع"
 }

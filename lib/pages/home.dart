@@ -15,8 +15,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int currentPage = 0;
   bool _isVisible = true;
+  bool _lights = false;
+  String bedDropdownValue;
+  String bathDropdownValue;
   ScrollController _hideButtonController;
   StreamController<double> controller = StreamController<double>.broadcast();
+  List<String> numberOfBedsList = List<String>();
+  List<String> numberOfBathsList = List<String>();
+  var selectedRange = RangeValues(0, 1000000);
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   final pageController = PageController(
@@ -51,6 +57,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    for (int i = 1; i <= 20; i++) {
+      numberOfBedsList.add('$i');
+      numberOfBathsList.add('$i');
+    }
     _hideButtonController = new ScrollController();
     _hideButtonController.addListener(() async {
       if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
@@ -187,14 +197,240 @@ class _HomeState extends State<Home> {
     );
   }
 
+  ///*****************Filter Dialog***************
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('فلتر'),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 35,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.65,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 6,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              child: InkWell(
+                                onTap: null,
+                                child: Container(
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                      border: Border.all(color: Color(0xFFCCCCCC), width: 2)
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text("كل المتاح", style: TextStyle(fontSize: 14),),
+                                ),
+                              )
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.65,
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          border: Border.all(color: Color(0xFFCCCCCC), width: 2)
+                      ),
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                          Image.asset('assets/icons/pin.png', scale: 4, color: Color(0xFFF99743),),
+                          Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                          Text(
+                            "${AppLocalizations.of(context).translate('currentLocation')}", style: TextStyle(fontSize: 18),)
+                        ],
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Image.asset('assets/icons/bed.png', scale: 4, color: Color(0xFFF99743),),
+                            Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                            Text("${AppLocalizations.of(context).translate('bedroomNumber')}"),
+                          ],
+                        ),
+                        Container(
+                          width: 60,
+                          height: 30,
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: Color(0xFFCCCCCC)),
+                          ),
+                          alignment: Alignment.center,
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: bedDropdownValue,
+                            hint: Text('0'),
+                            icon: Image.asset('assets/icons/downArrow.png', scale: 5,),
+                            iconSize: 24,
+                            underline: SizedBox(),
+                            style: TextStyle(color: Colors.deepPurple,),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                bedDropdownValue = newValue;
+                                print(bedDropdownValue);
+                              });
+                            },
+                            items: numberOfBedsList
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value, textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15),),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Image.asset('assets/icons/bath.png', scale: 4, color: Color(0xFFF99743),),
+                            Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                            Text("${AppLocalizations.of(context).translate('bathroomNumber')}"),
+                          ],
+                        ),
+                        Container(
+                          width: 60,
+                          height: 30,
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: Color(0xFFCCCCCC)),
+                          ),
+                          alignment: Alignment.center,
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: bathDropdownValue,
+                            hint: Text('0'),
+                            icon: Image.asset('assets/icons/downArrow.png', scale: 5,),
+                            iconSize: 24,
+                            underline: SizedBox(),
+                            style: TextStyle(color: Colors.deepPurple,),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                bathDropdownValue = newValue;
+                                print(bathDropdownValue);
+                              });
+                            },
+                            items: numberOfBathsList
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value, textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15),),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.monetization_on, color: Colors.orange, size: 20,),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                        Text("${AppLocalizations.of(context).translate('price')}")
+                      ],
+                    ),
+                    RangeSlider(
+                      values: selectedRange,
+                      divisions: 1000,
+                      min: 0,
+                      max: 1000000,
+                      labels: RangeLabels('${selectedRange.start}', '${selectedRange.end}'),
+                      onChanged: (RangeValues newRange) {
+                        setState(() {
+                          selectedRange = newRange;
+                        });
+                      },
+                    ),
+                    Row(
+                      children: <Widget>[
+                        CupertinoSwitch(
+                          value: _lights,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _lights = value;
+                            });
+                          },
+                        ),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 10),),
+                        Text("${AppLocalizations.of(context).translate('adDurationSwitch')}", style: TextStyle(
+                            fontSize: 18),)
+                      ],
+                    ),
+                    Text('Would you like to approve of this message?'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('موافق'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text('رجوع'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   /// *************************Scaffold***********************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _drawerKey,
       drawer: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width * 0.8,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(40),
@@ -349,7 +585,7 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: null,
+            onPressed: () => _showMyDialog(),
             icon: Icon(
               Icons.filter_list,
               color: Colors.orange,
