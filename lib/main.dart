@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:realestate/splashScreen.dart';
+import 'package:realestate/pages/home.dart';
 
 import 'I10n/AppLanguage.dart';
 import 'I10n/app_localizations.dart';
@@ -40,15 +40,16 @@ class MyApp extends StatelessWidget {
           locale: model.appLocal,
           title: 'نفذ',
           theme: ThemeData(
+            primaryColor: Colors.white,
             textTheme: Theme.of(context).textTheme.apply(
-              fontFamily: 'coconext',
-              fontSizeFactor: 1.3,
-              bodyColor: Color(0xFF555555),
-              displayColor: Color(0xFF555555),
-              decorationColor: Color(0xFF555555),
-            ),
+                  fontFamily: 'coconext',
+                  fontSizeFactor: 1.3,
+                  bodyColor: Color(0xFF555555),
+                  displayColor: Color(0xFF555555),
+                  decorationColor: Color(0xFF555555),
+                ),
           ),
-          home: SplashScreen(),
+          home: Home(),
         );
       }),
     );
