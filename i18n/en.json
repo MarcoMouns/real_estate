@@ -32,5 +32,15 @@
   "price": "price",
   "adDurationSwitch": "ads during the last 2 weeks only",
   "accept": "ok",
-  "back": "cancel"
+  "back": "cancel",
+  "area": "area",
+  "front": "the front",
+  "lounges": "lounges",
+  "streetWidth": "street wide",
+  "floorNumber": "floor number",
+  "adNumber": "ad number",
+  "views": "views",
+  "DescriptionOfTheProperty": "Description of the property",
+  "call": "call",
+  "similarAds": "more products you may like"
 }

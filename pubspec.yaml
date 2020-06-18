@@ -34,6 +34,7 @@ dependencies:
   shared_preferences: ^0.5.6+3
   pin_code_fields: ^2.3.0+3
   google_maps_flutter: ^0.5.28+1
+  carousel_slider: ^2.1.0
 
 
 dev_dependencies:

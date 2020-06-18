@@ -32,5 +32,15 @@
   "price": "السعر",
   "adDurationSwitch": "الاعلانات خلال اسبوعين فقط",
   "accept": "موافق",
-  "back": "رجوع"
+  "back": "رجوع",
+  "area": "المساحة",
+  "front": "الواجهة",
+  "lounges": "الصالات",
+  "streetWidth": "عرض الشارع",
+  "floorNumber": "رقم الدور",
+  "adNumber": "رقم الاعلان",
+  "views": "المشاهدات",
+  "DescriptionOfTheProperty": "وصف العقار",
+  "call": "اتصال",
+  "similarAds": "اعلانات مشابهة"
 }

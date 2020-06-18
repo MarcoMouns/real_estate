@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:realestate/I10n/app_localizations.dart';
 
 class HomeCard extends StatefulWidget {
   @override
@@ -38,10 +37,10 @@ class _HomeCardState extends State<HomeCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('accept')}"),
+                      Text("فيلا للبيع"),
                       Row(
                         children: <Widget>[
-                          Text(("${AppLocalizations.of(context).translate('back')}")),
+                          Text(("9 دقيقة")),
                           Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                           Container(
                             width: 20,
