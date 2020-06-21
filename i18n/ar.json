@@ -42,5 +42,7 @@
   "views": "المشاهدات",
   "DescriptionOfTheProperty": "وصف العقار",
   "call": "اتصال",
-  "similarAds": "اعلانات مشابهة"
+  "similarAds": "اعلانات مشابهة",
+  "addNewAd": "اضافة اعلان",
+  "adType": "نوع الاعلان"
 }

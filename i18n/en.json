@@ -42,5 +42,7 @@
   "views": "views",
   "DescriptionOfTheProperty": "Description of the property",
   "call": "call",
-  "similarAds": "more products you may like"
+  "similarAds": "more products you may like",
+  "addNewAd": "add a product",
+  "adType": "product type"
 }
