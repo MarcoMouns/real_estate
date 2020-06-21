@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:realestate/pages/options/profile.dart';
+import 'package:realestate/pages/options/change_profile.dart';
 
 import 'I10n/AppLanguage.dart';
 import 'I10n/app_localizations.dart';
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                   decorationColor: Color(0xFF555555),
                 ),
           ),
-          home: Profile(),
+          home: ChangeProfile(),
         );
       }),
     );

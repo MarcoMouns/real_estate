@@ -1,54 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:realestate/I10n/AppLanguage.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/pages/options/profile.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/widgets/home_card.dart';
 
 import '../home.dart';
-import 'change_profile.dart';
-import 'favorites.dart';
 
-class Profile extends StatefulWidget {
+class Favorites extends StatefulWidget {
   @override
-  _ProfileState createState() => _ProfileState();
+  _FavoritesState createState() => _FavoritesState();
 }
 
-class _ProfileState extends State<Profile> {
+class _FavoritesState extends State<Favorites> {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-
-  Widget popUp() {
-    var appLanguage = Provider.of<AppLanguage>(context);
-    return CupertinoActionSheet(
-      title: new Text('اللغه'),
-      message: new Text('اختر اللغه'),
-      actions: <Widget>[
-        CupertinoActionSheetAction(
-          child: new Text('English'),
-          onPressed: () {
-            appLanguage.changeLanguage(Locale("en"));
-            Navigator.of(context).pop();
-          },
-        ),
-        CupertinoActionSheetAction(
-          child: new Text('Arabic'),
-          onPressed: () {
-            appLanguage.changeLanguage(Locale("ar"));
-            Navigator.of(context).pop();
-          },
-        )
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        child: new Text('رجوع'),
-        isDefaultAction: true,
-        onPressed: () {
-          Navigator.pop(context, 'Cancel');
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,9 +180,9 @@ class _ProfileState extends State<Profile> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Profile(),)
-                );
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Profile(),
+                ));
               },
             ),
           ],
@@ -245,56 +210,23 @@ class _ProfileState extends State<Profile> {
         child: Center(
           child: Column(
             children: <Widget>[
-              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              Image.asset(
-                'assets/images/person.png',
-                scale: 4,
-              ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-              Text('محمد محمد'),
-              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChangeProfile(),)),
-                    child: Row(
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/edit.png',
-                          scale: 3.5,
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                        Text("${AppLocalizations.of(context).translate('editProfile')}"),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => showCupertinoModalPopup(context: context, builder: (BuildContext context) => popUp()),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.language,
-                          color: Color(0xFF363636),
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                        Text("${AppLocalizations.of(context).translate('changeLang')}"),
-                      ],
-                    ),
-                  ),
-                ],
+              Image.asset(
+                'assets/icons/roundStar.png',
+                scale: 1,
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              Text("${AppLocalizations.of(context).translate('realEstate')}"),
+              Text("${AppLocalizations.of(context).translate('favorites')}"),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               ListView.builder(
                 primary: false,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: 5,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.symmetric(vertical: 5),
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -305,7 +237,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   );
                 },
-              )
+              ),
             ],
           ),
         ),
