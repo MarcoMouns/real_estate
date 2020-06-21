@@ -574,6 +574,22 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
+              title: Text("${AppLocalizations.of(context).translate('favorites')}"),
+              leading: Image.asset(
+                'assets/icons/roundStar.png',
+                scale: 1.7,
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.65,
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+            ListTile(
               title: Text("${AppLocalizations.of(context).translate('setting')}"),
               leading: Image.asset(
                 'assets/icons/star.png',

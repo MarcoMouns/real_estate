@@ -44,5 +44,9 @@
   "call": "اتصال",
   "similarAds": "اعلانات مشابهة",
   "addNewAd": "اضافة اعلان",
-  "adType": "نوع الاعلان"
+  "adType": "نوع الاعلان",
+  "editProfile": "تعديل الملف الشخصي",
+  "changeLang": "تغير اللغة",
+  "realEstate": "عقاراتى",
+  "favorites": "العقارات المفضلة"
 }
