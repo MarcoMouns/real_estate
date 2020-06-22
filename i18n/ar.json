@@ -49,5 +49,8 @@
   "changeLang": "تغير اللغة",
   "realEstate": "عقاراتى",
   "favorites": "العقارات المفضلة",
-  "edit": "تعديل"
+  "edit": "تعديل",
+  "notifications": "الاشعارات",
+  "signOut": "تسجيل خروج",
+  "signOutDialog": "  هل أنت متأكد من تسجيل خروجك بالتطبيق"
 }

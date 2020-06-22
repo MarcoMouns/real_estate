@@ -49,5 +49,8 @@
   "changeLang": "change language",
   "realEstate": "my real estate",
   "favorites": "favorites",
-  "edit": "edit"
+  "edit": "edit",
+  "notifications": "notifications",
+  "signOut": "sign out",
+  "signOutDialog": "are you sure that you want to sign out"
 }

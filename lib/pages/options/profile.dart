@@ -6,6 +6,7 @@ import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/widgets/home_card.dart';
+import 'package:realestate/widgets/logout_dialog.dart';
 
 import '../home.dart';
 import 'change_profile.dart';
@@ -233,9 +234,9 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
         actions: <Widget>[
           InkWell(
-            onTap: null,
+            onTap: () => showDialog(context: context, builder: (BuildContext context) => LogoutDialog()),
             child: Image.asset(
-              'assets/icons/bell.png',
+              'assets/icons/back.png',
               scale: 3.7,
             ),
           ),
