@@ -19,6 +19,20 @@ class _AddProductState extends State<AddProduct> {
   List<String> loungesList = List<String>();
   List<String> floorList = List<String>();
 
+  TextEditingController contentController = TextEditingController();
+  TextEditingController areaController = TextEditingController();
+  TextEditingController streetWideController = TextEditingController();
+
+  FocusNode contentNode = FocusNode();
+  FocusNode areaNode = FocusNode();
+  FocusNode streetWideNode = FocusNode();
+
+  unFocus() {
+    contentNode.unfocus();
+    areaNode.unfocus();
+    streetWideNode.unfocus();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -58,109 +72,88 @@ class _AddProductState extends State<AddProduct> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
+        child: GestureDetector(
+          onTap: () => unFocus(),
+          child: Column(
+            children: <Widget>[
+              Padding(padding: EdgeInsets.only(top: MediaQuery
+                  .of(context)
+                  .padding
+                  .top)),
+              Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.9,
 //              height: MediaQuery.of(context).size.height * 0.05,
 //              decoration: BoxDecoration(
 //                borderRadius: BorderRadius.all(Radius.circular(20)),
 //                border: Border.all(color: Color(0xFFCCCCCC))
 //              ),
-              child: ExpansionTile(
-                trailing: Image.asset(
-                  'assets/icons/downArrow.png',
-                  scale: 4,
-                ),
-                title: Row(
-                  children: <Widget>[
-                    Image.asset(
-                      'assets/icons/ad.png',
-                      scale: 4,
-                      color: Color(0xFFF99743),
-                    ),
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                    Text(
-                      "${AppLocalizations.of(context).translate('adType')}",
-                      style: TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
-                children: <Widget>[
-                  Text("villa"),
-                  Text("apartment"),
-                  Text("lack"),
-                  Text("building"),
-                  Text("land"),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: InkWell(
-                onTap: null,
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)), border: Border.all(color: Color(0xFFCCCCCC))),
-                  child: Row(
+                child: ExpansionTile(
+                  trailing: Image.asset(
+                    'assets/icons/downArrow.png',
+                    scale: 4,
+                  ),
+                  title: Row(
                     children: <Widget>[
                       Image.asset(
-                        'assets/icons/pin.png',
+                        'assets/icons/ad.png',
                         scale: 4,
                         color: Color(0xFFF99743),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                      ),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                       Text(
-                        "${AppLocalizations.of(context).translate('currentLocation')}",
-                        style: TextStyle(color: Color(0xFFACB1C0)),
+                        "${AppLocalizations.of(context).translate('adType')}",
+                        style: TextStyle(fontSize: 18),
                       )
                     ],
                   ),
+                  children: <Widget>[
+                    Text("villa"),
+                    Text("apartment"),
+                    Text("lack"),
+                    Text("building"),
+                    Text("land"),
+                  ],
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F5F8),
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/icons/roomArea.png',
-                        scale: 4,
-                        color: Color(0xFFF99743),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                      ),
-                      Text('${AppLocalizations.of(context).translate('area')}')
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        child: TextField(
-                          decoration: InputDecoration(hintText: "0"),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: InkWell(
+                  onTap: null,
+                  child: Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.9,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)), border: Border.all(color: Color(0xFFCCCCCC))),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/pin.png',
+                          scale: 4,
+                          color: Color(0xFFF99743),
                         ),
-                      ),
-                      Text("متر")
-                    ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                        Text(
+                          "${AppLocalizations.of(context).translate('currentLocation')}",
+                          style: TextStyle(color: Color(0xFFACB1C0)),
+                        )
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
-            Padding(
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF4F5F8),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,124 +161,103 @@ class _AddProductState extends State<AddProduct> {
                     Row(
                       children: <Widget>[
                         Image.asset(
-                          'assets/icons/compass.png',
+                          'assets/icons/roomArea.png',
                           scale: 4,
                           color: Color(0xFFF99743),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                         ),
-                        Text('${AppLocalizations.of(context).translate('front')}')
+                        Text('${AppLocalizations.of(context).translate('area')}')
                       ],
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 30,
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        border: Border.all(color: Color(0xFFCCCCCC)),
-                      ),
-                      alignment: Alignment.center,
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: frontDropdownValue,
-                        hint: Text('الوجه الغربية'),
-                        icon: Image.asset(
-                          'assets/icons/downArrow.png',
-                          scale: 5,
+                    Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.2,
+                          child: TextField(
+                            controller: areaController,
+                            focusNode: areaNode,
+                            decoration: InputDecoration(hintText: "0"),
+                          ),
                         ),
-                        iconSize: 24,
-                        underline: SizedBox(),
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                        ),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            frontDropdownValue = newValue;
-                            print(frontDropdownValue);
-                          });
-                        },
-                        items: frontList.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                        Text("متر")
+                      ],
                     ),
                   ],
-                )),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F5F8),
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Image.asset(
-                        'assets/icons/bed.png',
-                        scale: 4,
-                        color: Color(0xFFF99743),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                      ),
-                      Text('${AppLocalizations.of(context).translate('bedroomNumber')}')
-                    ],
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: 30,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(color: Color(0xFFCCCCCC)),
-                    ),
-                    alignment: Alignment.center,
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: bedDropdownValue,
-                      hint: Text('0'),
-                      icon: Image.asset(
-                        'assets/icons/downArrow.png',
-                        scale: 5,
-                      ),
-                      iconSize: 24,
-                      underline: SizedBox(),
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                      ),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          bedDropdownValue = newValue;
-                          print(bedDropdownValue);
-                        });
-                      },
-                      items: numberOfBedsList.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 15),
+                      Row(
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/icons/compass.png',
+                            scale: 4,
+                            color: Color(0xFFF99743),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                          ),
+                          Text('${AppLocalizations.of(context).translate('front')}')
+                        ],
+                      ),
+                      Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.4,
+                        height: 30,
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          border: Border.all(color: Color(0xFFCCCCCC)),
+                        ),
+                        alignment: Alignment.center,
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: frontDropdownValue,
+                          hint: Text('الوجه الغربية'),
+                          icon: Image.asset(
+                            'assets/icons/downArrow.png',
+                            scale: 5,
+                          ),
+                          iconSize: 24,
+                          underline: SizedBox(),
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              frontDropdownValue = newValue;
+                              print(frontDropdownValue);
+                            });
+                          },
+                          items: frontList.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  )),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF4F5F8),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,18 +265,21 @@ class _AddProductState extends State<AddProduct> {
                     Row(
                       children: <Widget>[
                         Image.asset(
-                          'assets/icons/bath.png',
+                          'assets/icons/bed.png',
                           scale: 4,
                           color: Color(0xFFF99743),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                         ),
-                        Text('${AppLocalizations.of(context).translate('bathroomNumber')}')
+                        Text('${AppLocalizations.of(context).translate('bedroomNumber')}')
                       ],
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.2,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.2,
                       height: 30,
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
@@ -314,7 +289,7 @@ class _AddProductState extends State<AddProduct> {
                       alignment: Alignment.center,
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: bathDropdownValue,
+                        value: bedDropdownValue,
                         hint: Text('0'),
                         icon: Image.asset(
                           'assets/icons/downArrow.png',
@@ -327,11 +302,11 @@ class _AddProductState extends State<AddProduct> {
                         ),
                         onChanged: (String newValue) {
                           setState(() {
-                            bathDropdownValue = newValue;
-                            print(bathDropdownValue);
+                            bedDropdownValue = newValue;
+                            print(bedDropdownValue);
                           });
                         },
-                        items: numberOfBathsList.map<DropdownMenuItem<String>>((String value) {
+                        items: numberOfBedsList.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
@@ -344,73 +319,76 @@ class _AddProductState extends State<AddProduct> {
                       ),
                     )
                   ],
-                )),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F5F8),
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Image.asset(
-                        'assets/icons/sofa.png',
-                        scale: 4,
-                        color: Color(0xFFF99743),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                      ),
-                      Text('${AppLocalizations.of(context).translate('lounges')}')
-                    ],
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: 30,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(color: Color(0xFFCCCCCC)),
-                    ),
-                    alignment: Alignment.center,
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: loungesDropdownValue,
-                      hint: Text('0'),
-                      icon: Image.asset(
-                        'assets/icons/downArrow.png',
-                        scale: 5,
-                      ),
-                      iconSize: 24,
-                      underline: SizedBox(),
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                      ),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          loungesDropdownValue = newValue;
-                          print(loungesDropdownValue);
-                        });
-                      },
-                      items: loungesList.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 15),
+                      Row(
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/icons/bath.png',
+                            scale: 4,
+                            color: Color(0xFFF99743),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                          ),
+                          Text('${AppLocalizations.of(context).translate('bathroomNumber')}')
+                        ],
+                      ),
+                      Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.2,
+                        height: 30,
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          border: Border.all(color: Color(0xFFCCCCCC)),
+                        ),
+                        alignment: Alignment.center,
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: bathDropdownValue,
+                          hint: Text('0'),
+                          icon: Image.asset(
+                            'assets/icons/downArrow.png',
+                            scale: 5,
+                          ),
+                          iconSize: 24,
+                          underline: SizedBox(),
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              bathDropdownValue = newValue;
+                              print(bathDropdownValue);
+                            });
+                          },
+                          items: numberOfBathsList.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  )),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF4F5F8),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -418,95 +396,258 @@ class _AddProductState extends State<AddProduct> {
                     Row(
                       children: <Widget>[
                         Image.asset(
-                          'assets/icons/street.png',
+                          'assets/icons/sofa.png',
                           scale: 4,
                           color: Color(0xFFF99743),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                         ),
-                        Text('${AppLocalizations.of(context).translate('streetWidth')}')
+                        Text('${AppLocalizations.of(context).translate('lounges')}')
                       ],
                     ),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.2,
+                      height: 30,
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        border: Border.all(color: Color(0xFFCCCCCC)),
+                      ),
+                      alignment: Alignment.center,
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: loungesDropdownValue,
+                        hint: Text('0'),
+                        icon: Image.asset(
+                          'assets/icons/downArrow.png',
+                          scale: 5,
+                        ),
+                        iconSize: 24,
+                        underline: SizedBox(),
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                        ),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            loungesDropdownValue = newValue;
+                            print(loungesDropdownValue);
+                          });
+                        },
+                        items: loungesList.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/icons/street.png',
+                            scale: 4,
+                            color: Color(0xFFF99743),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                          ),
+                          Text('${AppLocalizations.of(context).translate('streetWidth')}')
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.2,
+                            child: TextField(
+                              controller: streetWideController,
+                              focusNode: streetWideNode,
+                              decoration: InputDecoration(hintText: "0"),
+                            ),
+                          ),
+                          Text("م")
+                        ],
+                      ),
+                    ],
+                  )),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF4F5F8),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
                     Row(
                       children: <Widget>[
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.2,
-                          child: TextField(
-                            decoration: InputDecoration(hintText: "0"),
-                          ),
+                        Image.asset(
+                          'assets/icons/building.png',
+                          scale: 4,
+                          color: Color(0xFFF99743),
                         ),
-                        Text("م")
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                        ),
+                        Text('${AppLocalizations.of(context).translate('floorNumber')}')
                       ],
                     ),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.3,
+                      height: 40,
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        border: Border.all(color: Color(0xFFCCCCCC)),
+                      ),
+                      alignment: Alignment.center,
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: floorDropdownValue,
+                        hint: Text('دور اول'),
+                        icon: Image.asset(
+                          'assets/icons/downArrow.png',
+                          scale: 5,
+                        ),
+                        iconSize: 24,
+                        underline: SizedBox(),
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                        ),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            floorDropdownValue = newValue;
+                            print(floorDropdownValue);
+                          });
+                        },
+                        items: floorList.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ],
-                )),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F5F8),
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/icons/building.png',
-                        scale: 4,
-                        color: Color(0xFFF99743),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              SizedBox(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.9,
+                child: TextField(
+                  controller: contentController,
+                  focusNode: contentNode,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                      filled: true,
+                      focusColor: Color(0xFFF3F3F3),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 15,
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                      ),
-                      Text('${AppLocalizations.of(context).translate('floorNumber')}')
-                    ],
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: 40,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(color: Color(0xFFCCCCCC)),
-                    ),
-                    alignment: Alignment.center,
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: floorDropdownValue,
-                      hint: Text('دور اول'),
-                      icon: Image.asset(
-                        'assets/icons/downArrow.png',
-                        scale: 5,
-                      ),
-                      iconSize: 24,
-                      underline: SizedBox(),
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                      ),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          floorDropdownValue = newValue;
-                          print(floorDropdownValue);
-                        });
-                      },
-                      items: floorList.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 15),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: BorderSide(color: Color(0xFFB9B9B9))),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: BorderSide(color: Color(0xFFB9B9B9))),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: BorderSide(color: Colors.blue)),
+                      hintText: "${AppLocalizations.of(context).translate('realEstateDescription')}"),
+                ),
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  itemBuilder: (context, index) {
+                    if (index == 0)
+                      return InkWell(
+                        onTap: null,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: Color(0xFFB9B9B9)),
+                              color: Color(0xFFF3F3F3)
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
+                          alignment: Alignment.center,
+                          child: Image.asset('assets/icons/video.png', scale: 3,),
+                        ),
+                      );
+                    else
+                      return InkWell(
+                        onTap: null,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: Color(0xFFB9B9B9)),
+                              color: Color(0xFFF3F3F3)
+                          ),
+                          alignment: Alignment.center,
+                          child: Image.asset('assets/icons/image.png', scale: 3,),
+                        ),
+                      );
+                  },
+                ),
               ),
-            ),
-          ],
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              InkWell(
+                onTap: null,
+                child: Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.8,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                      color: Color(0xFF0D986A),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                  alignment: Alignment.center,
+                  child: Text("${AppLocalizations.of(context).translate('save')}", style: TextStyle(color: Colors.white),),
+                ),
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+            ],
+          ),
         ),
       ),
     );

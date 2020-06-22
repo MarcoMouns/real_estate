@@ -3,13 +3,14 @@ import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/auth/phone_check.dart';
 import 'package:realestate/pages/auth/registration.dart';
 
+import '../home.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -36,8 +37,10 @@ class _LoginState extends State<Login> {
     }
     else passwordEmptyError = false;
     setState(() {});
-    if(passwordController.text.isNotEmpty && phoneController.text.isNotEmpty){
-
+    if(passwordController.text.isNotEmpty && phoneController.text.isNotEmpty) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Home(),)
+      );
     }
   }
 
@@ -52,11 +55,17 @@ class _LoginState extends State<Login> {
               Expanded(
                 flex: 1,
                 child: InkWell(
-                  onTap: null,
+                  onTap: () =>
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Home(),)
+                      ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     alignment: Alignment.topRight,
-                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text("${AppLocalizations.of(context).translate('skip')}"),
                   ),
                 ),

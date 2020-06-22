@@ -52,5 +52,10 @@
   "edit": "تعديل",
   "notifications": "الاشعارات",
   "signOut": "تسجيل خروج",
-  "signOutDialog": "  هل أنت متأكد من تسجيل خروجك بالتطبيق"
+  "signOutDialog": "  هل أنت متأكد من تسجيل خروجك بالتطبيق",
+  "msgTitle": "عنوان الرسالة",
+  "msgContent": "اكتب رسالتك",
+  "msgUs": "او ارسل رساله لنا",
+  "realEstateDescription": "وصف العقار",
+  "save": "حفظ"
 }

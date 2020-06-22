@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/pages/auth/login.dart';
 
 class LogoutDialog extends StatefulWidget {
   @override
@@ -30,7 +31,9 @@ class _LogoutDialogState extends State<LogoutDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 InkWell(
-                  onTap: null,
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+                  },
                   child: Container(
                     width: 150,
                     height: 50,

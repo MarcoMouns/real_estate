@@ -52,5 +52,10 @@
   "edit": "edit",
   "notifications": "notifications",
   "signOut": "sign out",
-  "signOutDialog": "are you sure that you want to sign out"
+  "signOutDialog": "are you sure that you want to sign out",
+  "msgTitle": "message title",
+  "msgContent": "message content",
+  "msgUs": "send us a message",
+  "realEstateDescription": "real estate description",
+  "save": "save"
 }

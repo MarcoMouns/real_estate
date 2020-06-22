@@ -6,6 +6,8 @@ import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/widgets/home_card.dart';
 
 import '../home.dart';
+import 'callUs.dart';
+import 'notifications.dart';
 
 class Favorites extends StatefulWidget {
   @override
@@ -146,7 +148,9 @@ class _FavoritesState extends State<Favorites> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CallUs(),
+                ));
               },
             ),
             SizedBox(
@@ -198,7 +202,10 @@ class _FavoritesState extends State<Favorites> {
         centerTitle: true,
         actions: <Widget>[
           InkWell(
-            onTap: null,
+            onTap: () =>
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Notifications(),)
+                ),
             child: Image.asset(
               'assets/icons/bell.png',
               scale: 3.7,

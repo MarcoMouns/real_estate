@@ -9,6 +9,7 @@ import 'package:realestate/widgets/home_card.dart';
 import 'package:realestate/widgets/logout_dialog.dart';
 
 import '../home.dart';
+import 'callUs.dart';
 import 'change_profile.dart';
 import 'favorites.dart';
 
@@ -182,7 +183,9 @@ class _ProfileState extends State<Profile> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CallUs(),
+                ));
               },
             ),
             SizedBox(

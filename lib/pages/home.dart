@@ -9,7 +9,9 @@ import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/widgets/home_card.dart';
 
+import 'options/callUs.dart';
 import 'options/favorites.dart';
+import 'options/notifications.dart';
 import 'options/profile.dart';
 
 class Home extends StatefulWidget {
@@ -567,7 +569,9 @@ class _HomeState extends State<Home> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CallUs(),
+                ));
               },
             ),
             SizedBox(
@@ -627,7 +631,10 @@ class _HomeState extends State<Home> {
             ),
           ),
           InkWell(
-            onTap: null,
+            onTap: () =>
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Notifications(),)
+                ),
             child: Image.asset(
               'assets/icons/bell.png',
               scale: 3.7,
