@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:realestate/pages/home.dart';
+import 'package:realestate/splashScreen.dart';
 
 import 'I10n/AppLanguage.dart';
 import 'I10n/app_localizations.dart';
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                   decorationColor: Color(0xFF555555),
                 ),
           ),
-          home: Home(),
+          home: SplashScreen(),
         );
       }),
     );
