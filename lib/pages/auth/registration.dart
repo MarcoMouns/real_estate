@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 
 class Registration extends StatefulWidget {
@@ -7,10 +10,10 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  File _image;
 
   FocusNode phoneNode = FocusNode();
   FocusNode passwordNode = FocusNode();
@@ -20,31 +23,38 @@ class _RegistrationState extends State<Registration> {
   bool passwordEmptyError = false;
   bool nameEmptyError = false;
 
-  unFocus(){
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
+  unFocus() {
     phoneNode.unfocus();
     passwordNode.unfocus();
     nameNode.unfocus();
   }
 
-  validate(){
+  validate() {
     print('phoneController = ${phoneController.text.isEmpty}');
     print('passwordController = ${passwordController.text}');
-    if(phoneController.text.isEmpty){
+    if (phoneController.text.isEmpty) {
       phoneEmptyError = true;
-    }
-    else phoneEmptyError = false;
-    if(passwordController.text.isEmpty){
+    } else
+      phoneEmptyError = false;
+    if (passwordController.text.isEmpty) {
       passwordEmptyError = true;
-    }
-    else passwordEmptyError = false;
-    if(nameController.text.isEmpty){
+    } else
+      passwordEmptyError = false;
+    if (nameController.text.isEmpty) {
       nameEmptyError = true;
-    }
-    else nameEmptyError = false;
+    } else
+      nameEmptyError = false;
     setState(() {});
-    if(passwordController.text.isNotEmpty && phoneController.text.isNotEmpty){
-
-    }
+    if (passwordController.text.isNotEmpty &&
+        phoneController.text.isNotEmpty) {}
   }
 
   @override
@@ -58,29 +68,49 @@ class _RegistrationState extends State<Registration> {
               Expanded(
                   flex: 1,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         InkWell(
                           onTap: null,
-                          child: Text("${AppLocalizations.of(context).translate('skip')}"),
+                          child: Text(
+                              "${AppLocalizations.of(context).translate('skip')}"),
                         ),
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: Image.asset('assets/icons/back.png',scale: 4,),
+                          child: Image.asset(
+                            'assets/icons/back.png',
+                            scale: 4,
+                          ),
                         )
                       ],
                     ),
-                  )
-              ),
+                  )),
               Expanded(
                 flex: 5,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Image.asset('assets/images/profile.png',scale: 3.5,),
+                      InkWell(
+                        onTap: () => getImage(),
+                        child: _image == null
+                            ? Image.asset(
+                                'assets/images/profile.png',
+                                scale: 3.5,
+                              )
+                            : ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
+                                child: Image.file(
+                                  _image,
+                                  fit: BoxFit.cover,
+                                  width: 150,
+                                  height: 150,
+                                ),
+                              ),
+                      ),
                       Padding(padding: EdgeInsets.only(top: 40)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -95,24 +125,29 @@ class _RegistrationState extends State<Registration> {
                                 vertical: 15,
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Colors.blue)
-                              ),
-                              hintText: "${AppLocalizations.of(context).translate('name')}"
-                          ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              hintText:
+                                  "${AppLocalizations.of(context).translate('name')}"),
                         ),
                       ),
-                      nameEmptyError?
-                      Text("${"${AppLocalizations.of(context).translate('nameEmptyError')}"}",style: TextStyle(color:
-                      Colors.red),):Container(),
+                      nameEmptyError
+                          ? Text(
+                              "${"${AppLocalizations.of(context).translate('nameEmptyError')}"}",
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -128,24 +163,29 @@ class _RegistrationState extends State<Registration> {
                                 vertical: 15,
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Colors.blue)
-                              ),
-                              hintText: "${AppLocalizations.of(context).translate('phoneNumber')}"
-                          ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              hintText:
+                                  "${AppLocalizations.of(context).translate('phoneNumber')}"),
                         ),
                       ),
-                      phoneEmptyError?
-                      Text("${"${AppLocalizations.of(context).translate('phoneEmptyError')}"}",style: TextStyle(color:
-                      Colors.red),):Container(),
+                      phoneEmptyError
+                          ? Text(
+                              "${"${AppLocalizations.of(context).translate('phoneEmptyError')}"}",
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -160,24 +200,28 @@ class _RegistrationState extends State<Registration> {
                                 vertical: 15,
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Color(0xFFB9B9B9))
-                              ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Colors.blue)
-                              ),
-                              hintText: "${AppLocalizations.of(context).translate('password')}"
-                          ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Colors.blue)),
+                              hintText:
+                                  "${AppLocalizations.of(context).translate('password')}"),
                         ),
                       ),
-                      passwordEmptyError?
-                      Text("${"${AppLocalizations.of(context).translate('passwordEmptyError')}"}",style: TextStyle(color:
-                      Colors.red)):Container(),
+                      passwordEmptyError
+                          ? Text(
+                              "${"${AppLocalizations.of(context).translate('passwordEmptyError')}"}",
+                              style: TextStyle(color: Colors.red))
+                          : Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       InkWell(
                         onTap: () => validate(),
@@ -186,10 +230,13 @@ class _RegistrationState extends State<Registration> {
                           padding: EdgeInsets.symmetric(vertical: 15),
                           decoration: BoxDecoration(
                               color: Color(0xFF0D986A),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
                           alignment: Alignment.center,
-                          child: Text("${AppLocalizations.of(context).translate('register')}",style: TextStyle(color: Colors.white),),
+                          child: Text(
+                            "${AppLocalizations.of(context).translate('register')}",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ],
