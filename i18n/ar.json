@@ -57,5 +57,8 @@
   "msgContent": "اكتب رسالتك",
   "msgUs": "او ارسل رساله لنا",
   "realEstateDescription": "وصف العقار",
-  "save": "حفظ"
+  "save": "حفظ",
+  "Warning": "تحذير",
+  "Please check the Code": "الرجاء التأكد من الكود ",
+  "Done": "تم"
 }

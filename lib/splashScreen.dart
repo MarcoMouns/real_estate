@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/pages/auth/login.dart';
-
-
+import 'package:realestate/pages/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -9,9 +9,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-  goTo() async{
-    Future.delayed(Duration(seconds: 1),()=>Navigator.of(context).pushReplacement(
+  goTo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    Future.delayed(Duration(seconds: 1), () =>
+    token != null ? Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => Home(),)) : Navigator.of(
+        context).pushReplacement(
         MaterialPageRoute(builder: (context) => Login(),)
     ));
   }

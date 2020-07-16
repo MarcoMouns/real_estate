@@ -57,5 +57,8 @@
   "msgContent": "message content",
   "msgUs": "send us a message",
   "realEstateDescription": "real estate description",
-  "save": "save"
+  "save": "save",
+  "Warning": "Warning",
+  "Please check the Code": "Please check the Code ",
+  "Done": "done"
 }

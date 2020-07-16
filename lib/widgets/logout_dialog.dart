@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/auth/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogoutDialog extends StatefulWidget {
   @override
@@ -31,8 +32,12 @@ class _LogoutDialogState extends State<LogoutDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+                  onTap: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.clear();
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => Login()));
                   },
                   child: Container(
                     width: 150,
@@ -42,7 +47,8 @@ class _LogoutDialogState extends State<LogoutDialog> {
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       border: Border.all(color: Color(0xFFCFCFCF)),
                     ),
-                    child: Text("${"${AppLocalizations.of(context).translate('signOut')}"}"),
+                    child: Text(
+                        "${"${AppLocalizations.of(context).translate('signOut')}"}"),
                   ),
                 ),
                 InkWell(

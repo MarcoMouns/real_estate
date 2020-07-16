@@ -708,13 +708,16 @@ class _HomeState extends State<Home> {
                               });
                             },
                             child: Container(
-                              width: 65,
+                              width: 60,
                               height: 46,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(27)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(27)),
                                 color: _isVisible == true && currentPage == 0
                                     ? Color(0xFFF99743)
-                                    : _isVisible == true && currentPage != 0 ? Colors.transparent : Colors.transparent,
+                                    : _isVisible == true && currentPage != 0
+                                        ? Colors.transparent
+                                        : Colors.transparent,
                               ),
                               alignment: Alignment.center,
                               child: Icon(

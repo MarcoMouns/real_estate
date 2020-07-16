@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/pages/auth/otp.dart';
+import 'package:realestate/services/registration.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -23,11 +25,13 @@ class _RegistrationState extends State<Registration> {
   bool passwordEmptyError = false;
   bool nameEmptyError = false;
 
+  final picker = ImagePicker();
+
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(pickedFile.path);
     });
   }
 
@@ -53,8 +57,17 @@ class _RegistrationState extends State<Registration> {
     } else
       nameEmptyError = false;
     setState(() {});
-    if (passwordController.text.isNotEmpty &&
-        phoneController.text.isNotEmpty) {}
+    if (passwordController.text.isNotEmpty && phoneController.text.isNotEmpty) {
+      RegistrationAndOtp().sendOtp(phone: phoneController.text);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Otp(
+          image: _image,
+          name: nameController.text,
+          password: passwordController.text,
+          phone: phoneController.text,
+        ),
+      ));
+    }
   }
 
   @override
@@ -192,6 +205,7 @@ class _RegistrationState extends State<Registration> {
                         child: TextField(
                           controller: passwordController,
                           focusNode: passwordNode,
+                          obscureText: true,
                           decoration: InputDecoration(
                               filled: true,
                               focusColor: Color(0xFFF3F3F3),
@@ -201,7 +215,7 @@ class _RegistrationState extends State<Registration> {
                               ),
                               border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                                   borderSide:
                                       BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
