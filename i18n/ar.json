@@ -71,5 +71,9 @@
   "streetWideErrorMsg": "من فضلك ادخل عرض الشارع",
   "contentErrorMsg": "من فضلك ادخل وصف العقار",
   "priceErrorMsg": "من فضلك ادخل العر",
-  "uploadComplete": "تم الرفع بنجاح"
+  "uploadComplete": "تم الرفع بنجاح",
+  "phoneAlreadyRegistered": "الهاتف مسجل سابقًا",
+  "phoneLengthError": "يجب ان يكون الهاتف مكون من 9 ارقام",
+  "User Does not exist": "هذا المستخدم ليس موجود",
+  "wrongPassword": "كلمة المرور غير صحيحة"
 }

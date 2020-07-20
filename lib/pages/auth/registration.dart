@@ -24,6 +24,8 @@ class _RegistrationState extends State<Registration> {
   bool phoneEmptyError = false;
   bool passwordEmptyError = false;
   bool nameEmptyError = false;
+  bool alreadyRegistered = false;
+  bool phoneLength = false;
 
   final picker = ImagePicker();
 
@@ -41,17 +43,27 @@ class _RegistrationState extends State<Registration> {
     nameNode.unfocus();
   }
 
-  validate() {
+  validate() async {
     bool isReg = false;
     Pattern pattern = r"[a-zA-Z]+(?:\s[a-zA-Z]+)?";
     print(nameController.text);
     isReg = RegExp(pattern).hasMatch(nameController.text);
+    int apiCode =
+        await RegistrationAndOtp().sendOtp(phone: phoneController.text);
     print('phoneController = ${phoneController.text.isEmpty}');
     print('passwordController = ${passwordController.text}');
     if (phoneController.text.isEmpty) {
       phoneEmptyError = true;
     } else
       phoneEmptyError = false;
+    if (apiCode == 412) {
+      alreadyRegistered = true;
+    } else
+      alreadyRegistered = false;
+    if (apiCode == 413) {
+      phoneLength = true;
+    } else
+      phoneLength = false;
     if (passwordController.text.isEmpty) {
       passwordEmptyError = true;
     } else
@@ -61,8 +73,10 @@ class _RegistrationState extends State<Registration> {
     } else
       nameEmptyError = false;
     setState(() {});
-    if (passwordController.text.isNotEmpty && phoneController.text.isNotEmpty) {
-      RegistrationAndOtp().sendOtp(phone: phoneController.text);
+    if (passwordController.text.isNotEmpty &&
+        phoneController.text.isNotEmpty &&
+        alreadyRegistered == false &&
+        phoneLength == false) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Otp(
           image: _image,
@@ -183,9 +197,9 @@ class _RegistrationState extends State<Registration> {
                               ),
                               border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                                   borderSide:
-                                      BorderSide(color: Color(0xFFB9B9B9))),
+                                  BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
@@ -196,18 +210,35 @@ class _RegistrationState extends State<Registration> {
                                   BorderRadius.all(Radius.circular(20)),
                                   borderSide: BorderSide(color: Colors.blue)),
                               hintText:
-                              "${AppLocalizations.of(context).translate('phoneNumber')}"),
+                              "${AppLocalizations.of(context).translate(
+                                  'phoneNumber')}"),
                         ),
                       ),
                       phoneEmptyError
                           ? Text(
-                              "${"${AppLocalizations.of(context).translate('phoneEmptyError')}"}",
-                              style: TextStyle(color: Colors.red),
-                            )
+                        "${"${AppLocalizations.of(context).translate(
+                            'phoneEmptyError')}"}",
+                        style: TextStyle(color: Colors.red),
+                      )
+                          : alreadyRegistered
+                          ? Text(
+                        "${"${AppLocalizations.of(context).translate(
+                            'phoneAlreadyRegistered')}"}",
+                        style: TextStyle(color: Colors.red),
+                      )
+                          : phoneLength
+                          ? Text(
+                        "${"${AppLocalizations.of(context).translate(
+                            'phoneLengthError')}"}",
+                        style: TextStyle(color: Colors.red),
+                      )
                           : Container(),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.8,
                         child: TextField(
                           controller: passwordController,
                           focusNode: passwordNode,
@@ -223,7 +254,7 @@ class _RegistrationState extends State<Registration> {
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
                                   borderSide:
-                                      BorderSide(color: Color(0xFFB9B9B9))),
+                                  BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)),

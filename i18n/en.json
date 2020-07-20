@@ -71,5 +71,9 @@
   "streetWideErrorMsg": "please enter the street wide",
   "contentErrorMsg": "please enter the description",
   "priceErrorMsg": "please enter the price",
-  "uploadComplete": "upload success"
+  "uploadComplete": "upload success",
+  "phoneAlreadyRegistered": "Phone already registered",
+  "phoneLengthError": "Phone length must be 9",
+  "User Does not exist": "User Does not exist",
+  "wrongPassword": "Wrong password"
 }

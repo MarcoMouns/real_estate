@@ -38,7 +38,7 @@ class _OtpState extends State<Otp> {
           actions: <Widget>[
             FlatButton(
               child: Text(
-                AppLocalizations.of(context).translate('Done'),
+                AppLocalizations.of(context).translate('done'),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

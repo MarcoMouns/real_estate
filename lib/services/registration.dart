@@ -12,14 +12,15 @@ class RegistrationAndOtp {
   Future registration(
       {String name, String phone, String password, File image}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _formData = FormData.fromMap({
-      "name": "$name",
-      "password": "$password",
-      "photo": image.path == null
-          ? await MultipartFile.fromFile("")
-          : await MultipartFile.fromFile("${image.path}"),
-      "mobile": "$phone"
-    });
+    image == null
+        ? _formData = FormData.fromMap(
+            {"name": "$name", "password": "$password", "mobile": "$phone"})
+        : _formData = FormData.fromMap({
+            "name": "$name",
+            "password": "$password",
+            "photo": await MultipartFile.fromFile("${image.path}"),
+            "mobile": "$phone"
+          });
     try {
       Response response =
           await Dio().post("$_url$_registration", data: _formData);
@@ -48,10 +49,10 @@ class RegistrationAndOtp {
       Response response = await Dio().post("$_url$_otp", data: _formData);
       print(response.data);
 
-      return response.data;
+      return response.statusCode;
     } on DioError catch (e) {
       print(e.response.data);
-      return e.response.data;
+      return e.response.statusCode;
     }
   }
 

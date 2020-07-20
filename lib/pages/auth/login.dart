@@ -35,12 +35,38 @@ class _LoginState extends State<Login> {
             AppLocalizations.of(context).translate('Warning'),
           ),
           content: Text(
-            AppLocalizations.of(context).translate('Please check the Code'),
+            AppLocalizations.of(context).translate('User Does not exist'),
           ),
           actions: <Widget>[
             FlatButton(
               child: Text(
-                AppLocalizations.of(context).translate('Done'),
+                AppLocalizations.of(context).translate('done'),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> wrongPasswordDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context).translate('Warning'),
+          ),
+          content: Text(
+            AppLocalizations.of(context).translate('wrongPassword'),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                AppLocalizations.of(context).translate('done'),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -55,6 +81,8 @@ class _LoginState extends State<Login> {
   validate() async {
     print('phoneController = ${phoneController.text.isEmpty}');
     print('passwordController = ${passwordController.text}');
+    int apiCode = await LoginService()
+        .login(password: passwordController.text, phone: phoneController.text);
     if (phoneController.text.isEmpty) {
       phoneEmptyError = true;
     } else
@@ -65,16 +93,16 @@ class _LoginState extends State<Login> {
       passwordEmptyError = false;
     setState(() {});
     if (passwordController.text.isNotEmpty && phoneController.text.isNotEmpty) {
-      int apiCode = await LoginService().login(
-          password: passwordController.text, phone: phoneController.text);
       if (apiCode == 200) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => Home(),
           ),
         );
-      } else {
+      } else if (apiCode == 404) {
         wrongInfoDialog(context);
+      } else {
+        wrongPasswordDialog(context);
       }
     }
   }
@@ -113,10 +141,7 @@ class _LoginState extends State<Login> {
                       ),
                       Padding(padding: EdgeInsets.only(top: 40)),
                       SizedBox(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.8,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: TextField(
                           controller: phoneController,
                           focusNode: phoneNode,
@@ -132,9 +157,9 @@ class _LoginState extends State<Login> {
                               ),
                               border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                                   borderSide:
-                                      BorderSide(color: Color(0xFFB9B9B9))),
+                                  BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
