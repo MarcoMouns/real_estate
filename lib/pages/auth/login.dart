@@ -121,7 +121,9 @@ class _LoginState extends State<Login> {
                           controller: phoneController,
                           focusNode: phoneNode,
                           keyboardType: TextInputType.number,
+                          maxLength: 9,
                           decoration: InputDecoration(
+                              counterText: "",
                               filled: true,
                               focusColor: Color(0xFFF3F3F3),
                               contentPadding: EdgeInsets.symmetric(
@@ -130,9 +132,9 @@ class _LoginState extends State<Login> {
                               ),
                               border: OutlineInputBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                                      BorderRadius.all(Radius.circular(20)),
                                   borderSide:
-                                  BorderSide(color: Color(0xFFB9B9B9))),
+                                      BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
