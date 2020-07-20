@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/models/categories.dart';
+import 'package:realestate/services/get_categories.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -12,12 +15,15 @@ class _AddProductState extends State<AddProduct> {
   String bathDropdownValue;
   String loungesDropdownValue;
   String floorDropdownValue;
+  bool isLoading = true;
 
   List<String> numberOfBedsList = List<String>();
   List<String> frontList = List<String>();
   List<String> numberOfBathsList = List<String>();
   List<String> loungesList = List<String>();
   List<String> floorList = List<String>();
+  List<CategoriesModel> categoriesModel = List<CategoriesModel>();
+  List<Text> categories = List<Text>();
 
   TextEditingController contentController = TextEditingController();
   TextEditingController areaController = TextEditingController();
@@ -27,16 +33,46 @@ class _AddProductState extends State<AddProduct> {
   FocusNode areaNode = FocusNode();
   FocusNode streetWideNode = FocusNode();
 
+  bool positionError = true;
+  bool positionErrorText = false;
+
   unFocus() {
     contentNode.unfocus();
     areaNode.unfocus();
     streetWideNode.unfocus();
   }
 
+  getCategories() async {
+    categoriesModel = await GetCategories().getCategories();
+    categoriesModel.forEach((element) {
+      categories.add(Text("${element.name}"));
+    });
+  }
+
+  getLocation() async {
+    Position position;
+    try {
+      position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      positionError = false;
+    } catch (e) {
+      print('position error');
+      positionError = true;
+      if (mounted) setState(() {});
+    }
+  }
+
+  getData() async {
+    await getCategories();
+    isLoading = false;
+    setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
     for (int i = 1; i <= 20; i++) {
       numberOfBedsList.add('$i');
       frontList.add('$i');
@@ -65,13 +101,15 @@ class _AddProductState extends State<AddProduct> {
                 child: AppBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0.0,
-                  title: Text('${AppLocalizations.of(context).translate('addNewAd')}'),
+                  title: Text(
+                      '${AppLocalizations.of(context).translate('addNewAd')}'),
                   centerTitle: true,
                 )),
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: isLoading ? Center(child: CircularProgressIndicator(),) :
+      SingleChildScrollView(
         child: GestureDetector(
           onTap: () => unFocus(),
           child: Column(
@@ -109,19 +147,13 @@ class _AddProductState extends State<AddProduct> {
                       )
                     ],
                   ),
-                  children: <Widget>[
-                    Text("villa"),
-                    Text("apartment"),
-                    Text("lack"),
-                    Text("building"),
-                    Text("land"),
-                  ],
+                  children: categories,
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: InkWell(
-                  onTap: null,
+                  onTap: () => getLocation(),
                   child: Container(
                     width: MediaQuery
                         .of(context)
@@ -129,7 +161,10 @@ class _AddProductState extends State<AddProduct> {
                         .width * 0.9,
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)), border: Border.all(color: Color(0xFFCCCCCC))),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      border: Border.all(color: Color(0xFFCCCCCC)),
+                      color: positionError ? Colors.transparent : Colors.blue,
+                    ),
                     child: Row(
                       children: <Widget>[
                         Image.asset(
@@ -181,7 +216,9 @@ class _AddProductState extends State<AddProduct> {
                           child: TextField(
                             controller: areaController,
                             focusNode: areaNode,
-                            decoration: InputDecoration(hintText: "0"),
+                            maxLength: 6,
+                            decoration: InputDecoration(
+                                hintText: "0", counterText: ""),
                           ),
                         ),
                         Text("متر")
