@@ -43,8 +43,9 @@ class _RegistrationState extends State<Registration> {
 
   validate() {
     bool isReg = false;
+    Pattern pattern = r"[a-zA-Z]+(?:\s[a-zA-Z]+)?";
     print(nameController.text);
-    isReg = RegExp(r'^[ا-يa-zA-Z0-9\s_]*$').hasMatch(nameController.text);
+    isReg = RegExp(pattern).hasMatch(nameController.text);
     print('phoneController = ${phoneController.text.isEmpty}');
     print('passwordController = ${passwordController.text}');
     if (phoneController.text.isEmpty) {
