@@ -60,5 +60,16 @@
   "save": "save",
   "Warning": "Warning",
   "Please check the Code": "Please check the Code ",
-  "Done": "done"
+  "done": "done",
+  "title": "product title",
+  "address": "real estate address",
+  "titleErrorMsg": "please enter the title",
+  "addressErrorMsg": "please enter the address",
+  "categoryErrorMsg": "please choose the product category",
+  "locationErrorMsg": "please click here to get the real estate location on the map",
+  "areaErrorMsg": "please enter the real estate area",
+  "streetWideErrorMsg": "please enter the street wide",
+  "contentErrorMsg": "please enter the description",
+  "priceErrorMsg": "please enter the price",
+  "uploadComplete": "upload success"
 }

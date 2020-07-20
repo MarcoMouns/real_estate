@@ -83,7 +83,7 @@ class _FavoritesState extends State<Favorites> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AddProduct(),
+                  builder: (context) => AddProductScreen(),
                 ));
               },
             ),

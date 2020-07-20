@@ -118,7 +118,7 @@ class _ProfileState extends State<Profile> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AddProduct(),
+                  builder: (context) => AddProductScreen(),
                 ));
               },
             ),

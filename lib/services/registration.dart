@@ -15,7 +15,9 @@ class RegistrationAndOtp {
     _formData = FormData.fromMap({
       "name": "$name",
       "password": "$password",
-      "photo": await MultipartFile.fromFile("${image.path}"),
+      "photo": image.path == null
+          ? await MultipartFile.fromFile("")
+          : await MultipartFile.fromFile("${image.path}"),
       "mobile": "$phone"
     });
     try {

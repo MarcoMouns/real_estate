@@ -504,7 +504,7 @@ class _HomeState extends State<Home> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AddProduct(),
+                  builder: (context) => AddProductScreen(),
                 ));
               },
             ),

@@ -60,5 +60,16 @@
   "save": "حفظ",
   "Warning": "تحذير",
   "Please check the Code": "الرجاء التأكد من الكود ",
-  "Done": "تم"
+  "done": "تم",
+  "title": "عنوان الاعلان",
+  "address": "عنوان العقار",
+  "titleErrorMsg": "من فضلك ادخل عنوان الاعلان",
+  "addressErrorMsg": "من فضلك ادخل عنوان العقار",
+  "categoryErrorMsg": "من فضلك اختار نوع الاعلان",
+  "locationErrorMsg": "من فضلك اضغط هنا لأدخال موقع العقار على الخريطه",
+  "areaErrorMsg": "من فضلك ادخل مساحه العقار",
+  "streetWideErrorMsg": "من فضلك ادخل عرض الشارع",
+  "contentErrorMsg": "من فضلك ادخل وصف العقار",
+  "priceErrorMsg": "من فضلك ادخل العر",
+  "uploadComplete": "تم الرفع بنجاح"
 }
