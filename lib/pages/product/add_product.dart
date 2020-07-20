@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/categories.dart';
+import 'package:realestate/models/facade.dart';
 import 'package:realestate/services/get_categories.dart';
+import 'package:realestate/services/get_facades.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -10,20 +12,29 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  int categoryId;
+  int facadeId;
+  int numberOfBeds;
+  int numberOfBaths;
+  int lounges;
+  int floor;
+
   String bedDropdownValue;
   String frontDropdownValue;
   String bathDropdownValue;
   String loungesDropdownValue;
   String floorDropdownValue;
+
   bool isLoading = true;
+  bool positionError = true;
+  bool positionErrorText = false;
 
   List<String> numberOfBedsList = List<String>();
-  List<String> frontList = List<String>();
   List<String> numberOfBathsList = List<String>();
   List<String> loungesList = List<String>();
   List<String> floorList = List<String>();
   List<CategoriesModel> categoriesModel = List<CategoriesModel>();
-  List<Text> categories = List<Text>();
+  List<FacadeModel> facadeModelList = List<FacadeModel>();
 
   TextEditingController contentController = TextEditingController();
   TextEditingController areaController = TextEditingController();
@@ -33,9 +44,6 @@ class _AddProductState extends State<AddProduct> {
   FocusNode areaNode = FocusNode();
   FocusNode streetWideNode = FocusNode();
 
-  bool positionError = true;
-  bool positionErrorText = false;
-
   unFocus() {
     contentNode.unfocus();
     areaNode.unfocus();
@@ -44,9 +52,10 @@ class _AddProductState extends State<AddProduct> {
 
   getCategories() async {
     categoriesModel = await GetCategories().getCategories();
-    categoriesModel.forEach((element) {
-      categories.add(Text("${element.name}"));
-    });
+  }
+
+  getFacade() async {
+    facadeModelList = await GetFacade().getFacade();
   }
 
   getLocation() async {
@@ -75,7 +84,6 @@ class _AddProductState extends State<AddProduct> {
     getData();
     for (int i = 1; i <= 20; i++) {
       numberOfBedsList.add('$i');
-      frontList.add('$i');
       numberOfBathsList.add('$i');
       loungesList.add('$i');
       floorList.add('$i');
@@ -147,7 +155,12 @@ class _AddProductState extends State<AddProduct> {
                       )
                     ],
                   ),
-                  children: categories,
+                  children: categoriesModel.map((value) {
+                    return InkWell(
+                      onTap: () => categoryId = value.id,
+                      child: Text("${value.name}"),
+                    );
+                  }).toList(),
                 ),
               ),
               Padding(
@@ -276,16 +289,30 @@ class _AddProductState extends State<AddProduct> {
                               print(frontDropdownValue);
                             });
                           },
-                          items: frontList.map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
+                          items:
+                          facadeModelList.map((value) {
+                            return DropdownMenuItem(
+                              value: value.name,
                               child: Text(
-                                value,
+                                value.name,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 15),
                               ),
+                              onTap: () => facadeId = value.id,
                             );
-                          }).toList(),
+                          }).toList()
+
+//                          frontList.map<DropdownMenuItem<String>>((String value) {
+//                            return DropdownMenuItem<String>(
+//                              value: value,
+//                              child: Text(
+//                                value,
+//                                textAlign: TextAlign.center,
+//                                style: TextStyle(fontSize: 15),
+//                              ),
+//                            );
+//                          }).toList()
+                          ,
                         ),
                       ),
                     ],
@@ -351,6 +378,7 @@ class _AddProductState extends State<AddProduct> {
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 15),
                             ),
+                            onTap: () => numberOfBeds = int.parse(value),
                           );
                         }).toList(),
                       ),
@@ -415,6 +443,7 @@ class _AddProductState extends State<AddProduct> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 15),
                               ),
+                              onTap: () => numberOfBaths = int.parse(value),
                             );
                           }).toList(),
                         ),
@@ -482,6 +511,7 @@ class _AddProductState extends State<AddProduct> {
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 15),
                             ),
+                            onTap: () => lounges = int.parse(value),
                           );
                         }).toList(),
                       ),
@@ -517,7 +547,9 @@ class _AddProductState extends State<AddProduct> {
                             child: TextField(
                               controller: streetWideController,
                               focusNode: streetWideNode,
-                              decoration: InputDecoration(hintText: "0"),
+                              maxLength: 6,
+                              decoration: InputDecoration(
+                                  hintText: "0", counterText: ""),
                             ),
                           ),
                           Text("م")
@@ -586,6 +618,7 @@ class _AddProductState extends State<AddProduct> {
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 15),
                             ),
+                            onTap: () => floor = int.parse(value),
                           );
                         }).toList(),
                       ),
