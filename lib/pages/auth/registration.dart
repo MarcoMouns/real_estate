@@ -48,6 +48,7 @@ class _RegistrationState extends State<Registration> {
     Pattern pattern = r"[a-zA-Z]+(?:\s[a-zA-Z]+)?";
     print(nameController.text);
     isReg = RegExp(pattern).hasMatch(nameController.text);
+    print(isReg);
     int apiCode =
         await RegistrationAndOtp().sendOtp(phone: phoneController.text);
     print('phoneController = ${phoneController.text.isEmpty}');
@@ -76,14 +77,15 @@ class _RegistrationState extends State<Registration> {
     if (passwordController.text.isNotEmpty &&
         phoneController.text.isNotEmpty &&
         alreadyRegistered == false &&
-        phoneLength == false) {
+        phoneLength == false && isReg == true) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Otp(
-          image: _image,
-          name: nameController.text,
-          password: passwordController.text,
-          phone: phoneController.text,
-        ),
+        builder: (context) =>
+            Otp(
+              image: _image,
+              name: nameController.text,
+              password: passwordController.text,
+              phone: phoneController.text,
+            ),
       ));
     }
   }

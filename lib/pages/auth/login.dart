@@ -190,6 +190,7 @@ class _LoginState extends State<Login> {
                         child: TextField(
                           controller: passwordController,
                           focusNode: passwordNode,
+                          obscureText: true,
                           decoration: InputDecoration(
                               filled: true,
                               focusColor: Color(0xFFF3F3F3),
@@ -199,7 +200,7 @@ class _LoginState extends State<Login> {
                               ),
                               border: OutlineInputBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                                      BorderRadius.all(Radius.circular(20)),
                                   borderSide:
                                   BorderSide(color: Color(0xFFB9B9B9))),
                               enabledBorder: OutlineInputBorder(
