@@ -237,7 +237,7 @@ class _FavoritesState extends State<Favorites> {
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ProductDetails(),
+                          builder: (context) => ProductDetails(1),
                         ));
                       },
                       child: HomeCard(),

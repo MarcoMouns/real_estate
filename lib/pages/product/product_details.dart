@@ -1,10 +1,18 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realestate/I10n/app_localizations.dart';
-import 'package:realestate/widgets/home_card.dart';
+import 'package:realestate/models/product_model.dart';
+import 'package:realestate/services/get_product.dart';
 
 class ProductDetails extends StatefulWidget {
+  int productId;
+
+  ProductDetails(this.productId);
+
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -13,6 +21,14 @@ class _ProductDetailsState extends State<ProductDetails> {
   List<String> imgList;
   List child;
   int _current = 0;
+  ProductModel productModel;
+  bool isLoading = true;
+
+  Completer<GoogleMapController> _controller = Completer();
+  final Set<Marker> _markers = {};
+
+  CameraPosition _kGooglePlex;
+
 
   static List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -23,10 +39,46 @@ class _ProductDetailsState extends State<ProductDetails> {
     return result;
   }
 
+  getProductDetails() async {
+    productModel = await GetProduct().getProduct(widget.productId);
+    List<String> photos = List<String>();
+    productModel.photosList.forEach((element) {
+      photos.add(element.photo);
+    });
+    initPhotos(photos);
+    _kGooglePlex = CameraPosition(
+      target: LatLng(productModel.latitude, productModel.longitude),
+      zoom: 14.4746,
+    );
+
+
+    _markers.add(Marker(
+      // This marker id can be anything that uniquely identifies each marker.
+      markerId: MarkerId("currentState"),
+      position: LatLng(productModel.latitude, productModel.longitude),
+      infoWindow: InfoWindow(
+        // title is the address
+        title: "${productModel.title}",
+        // snippet are the coordinates of the position
+        snippet: 'Lat: ${productModel.latitude}, Lng: ${productModel
+            .longitude}',
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
+
+    isLoading = false;
+    setState(() {});
+  }
+
+  initPhotos(List<String> photos) {
+    imgList = photos;
+    photoSlider();
+  }
+
   photoSlider() {
     child = map<Widget>(
       imgList,
-      (index, i) {
+          (index, i) {
         return Container(
           margin: EdgeInsets.all(5.0),
           child: ClipRRect(
@@ -42,12 +94,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    imgList = [
-      'https://d1ez3020z2uu9b.cloudfront.net/imagecache/rental-homes-photos-spain/Original/23591/9582456-23591-Marbella'
-          '-Villa_Crop_725_600.jpg',
-      'https://q-cf.bstatic.com/images/hotel/max1024x768/163/163300408.jpg'
-    ];
-    photoSlider();
+    getProductDetails();
   }
 
   @override
@@ -67,7 +114,8 @@ class _ProductDetailsState extends State<ProductDetails> {
         ],
       ),
       body: Scaffold(
-        body: SingleChildScrollView(
+        body: isLoading ? Center(child: CircularProgressIndicator(),) :
+        SingleChildScrollView(
           child: Column(
             children: <Widget>[
               CarouselSlider(
@@ -88,13 +136,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: map<Widget>(
                   imgList,
-                  (index, url) {
+                      (index, url) {
                     return Container(
                       width: 8.0,
                       height: 8.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 5.0),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: _current == index ? Color(0xFF0D986A) : Color(0xFFD8D8D8)),
+                          shape: BoxShape.circle,
+                          color: _current == index ? Color(0xFF0D986A) : Color(
+                              0xFFD8D8D8)),
                     );
                   },
                 ),
@@ -107,13 +158,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          "150 ريال",
+                          "${productModel.price} ريال ",
                           style: TextStyle(color: Color(0xFF0D986A)),
                         ),
                         Row(
                           children: <Widget>[
                             Text(
-                              "17 Nov 2020  06:48AM",
+                              "${productModel.date}",
                               style: TextStyle(color: Color(0xFFACB1C0)),
                             ),
                             Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
@@ -143,7 +194,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             padding: EdgeInsets.symmetric(horizontal: 5),
                           ),
                           Text(
-                            'طريق الملك فيصل , حي المربع , جدة',
+                            '${productModel.address}',
                             style: TextStyle(color: Color(0xFFACB1C0)),
                           )
                         ],
@@ -171,7 +222,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text('${AppLocalizations.of(context).translate('area')}')
                             ],
                           ),
-                          Text("1200 متر")
+                          Text("${productModel.area} متر ")
                         ],
                       ),
                     ),
@@ -190,10 +241,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('front')}')
+                                Text('${AppLocalizations.of(context).translate(
+                                    'front')}')
                               ],
                             ),
-                            Text("شمالي غربي"),
+                            Text("${productModel.facadeName}"),
                           ],
                         )),
                     Container(
@@ -218,7 +270,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text('${AppLocalizations.of(context).translate('bedroomNumber')}')
                             ],
                           ),
-                          Text("4")
+                          Text("${productModel.numberOfRooms}")
                         ],
                       ),
                     ),
@@ -237,10 +289,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('bathroomNumber')}')
+                                Text('${AppLocalizations.of(context).translate(
+                                    'bathroomNumber')}')
                               ],
                             ),
-                            Text("2"),
+                            Text("${productModel.numberOfBathRooms}"),
                           ],
                         )),
                     Container(
@@ -265,7 +318,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text('${AppLocalizations.of(context).translate('lounges')}')
                             ],
                           ),
-                          Text("1")
+                          Text("${productModel.numberOfLivingRooms}")
                         ],
                       ),
                     ),
@@ -284,10 +337,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('streetWidth')}')
+                                Text('${AppLocalizations.of(context).translate(
+                                    'streetWidth')}')
                               ],
                             ),
-                            Text("17 م"),
+                            Text("${productModel.streetWidth} م "),
                           ],
                         )),
                     Container(
@@ -312,7 +366,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text('${AppLocalizations.of(context).translate('floorNumber')}')
                             ],
                           ),
-                          Text("دور اول")
+                          Text("${productModel.floor}")
                         ],
                       ),
                     ),
@@ -331,10 +385,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('adNumber')}')
+                                Text('${AppLocalizations.of(context).translate(
+                                    'adNumber')}')
                               ],
                             ),
-                            Text("54756878"),
+                            Text("${productModel.id}"),
                           ],
                         )),
                     Container(
@@ -359,7 +414,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text('${AppLocalizations.of(context).translate('views')}')
                             ],
                           ),
-                          Text("45678")
+                          Text("${productModel.views}")
                         ],
                       ),
                     ),
@@ -367,19 +422,20 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${AppLocalizations.of(context).translate('DescriptionOfTheProperty')}",
+                        "${AppLocalizations.of(context).translate(
+                            'DescriptionOfTheProperty')}",
                         style: TextStyle(color: Color(0xFF0D986A)),
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 8)),
-                    Text(" يتميز العقار  بمكانة الفريد , حيث تتوافر جميع الخدمات الاساسية و المرافق  ويطل علي بحيرة صناعية"
-                        " وحديقة والعاب للاطفال"),
+                    Text("${productModel.description}"),
                     Padding(padding: EdgeInsets.only(top: 15)),
                     Material(
                       elevation: 1,
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -393,8 +449,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 8),
-                                      child: Text("ياسر محمد"),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text("${productModel.productCreator
+                                          .name}"),
                                     ),
                                     Padding(padding: EdgeInsets.only(top: 5)),
                                     Row(
@@ -431,7 +489,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                 color: Color(0xFF0D986A),
                                               ),
                                               Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                                              Text("${AppLocalizations.of(context).translate('chat')}"),
+                                              Text("${AppLocalizations.of(
+                                                  context).translate('chat')}"),
                                             ],
                                           ),
                                         ),
@@ -441,38 +500,56 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 )
                               ],
                             ),
-                            Row(
-                              children: <Widget>[
-                                Text('4.5'),
-                                Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
-                                Image.asset('assets/icons/roundStar.png', scale: 3),
-                              ],
-                            )
+                            Image.asset(
+                              'assets/icons/pin.png',
+                              scale: 4.5,
+                              color: Color(productModel.categoryColor),
+                            ),
                           ],
                         ),
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 25)),
-                    Image.asset('assets/images/map.png'),
-                    Padding(padding: EdgeInsets.only(top: 25)),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        "${AppLocalizations.of(context).translate('similarAds')}",
-                        style: TextStyle(color: Color(0xFF0D986A)),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.9,
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      child: GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: _kGooglePlex,
+                        markers: _markers,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 15)),
-                    ListView.builder(
-                      primary: false,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return HomeCard();
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
+                    Padding(padding: EdgeInsets.only(top: 25)),
+//                    Align(
+//                      alignment: Alignment.centerRight,
+//                      child: Text(
+//                        "${AppLocalizations.of(context).translate('similarAds')}",
+//                        style: TextStyle(color: Color(0xFF0D986A)),
+//                      ),
+//                    ),
+//                    Padding(padding: EdgeInsets.only(top: 15)),
+//                    ListView.builder(
+//                      primary: false,
+//                      shrinkWrap: true,
+//                      physics: NeverScrollableScrollPhysics(),
+//                      itemCount: 5,
+//                      itemBuilder: (context, index) {
+//                        return HomeCard();
+//                      },
+//                    ),
+                    Padding(padding: EdgeInsets.only(top: MediaQuery
+                        .of(context)
+                        .padding
+                        .top)),
                   ],
                 ),
               )

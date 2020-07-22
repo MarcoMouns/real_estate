@@ -47,7 +47,7 @@ class AddProduct {
       "longitude": "$long",
       "video": video == null ? null : await MultipartFile.fromFile(video.path),
       "category": "$categoryId",
-      "facade": "$facade",
+      "facade": facade,
       "photos": multipartFilePhotosList,
     });
 

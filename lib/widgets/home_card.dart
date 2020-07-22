@@ -1,11 +1,35 @@
 import 'package:flutter/material.dart';
 
 class HomeCard extends StatefulWidget {
+  int id;
+  String title;
+  double price;
+  int size;
+  String time;
+  int numberOfRooms;
+  int numberOfBathRooms;
+  String address;
+  String photo;
+  int categoryColor;
+
+  HomeCard(
+      {this.id,
+      this.title,
+      this.price,
+      this.size,
+      this.time,
+      this.numberOfRooms,
+      this.numberOfBathRooms,
+      this.address,
+      this.photo,
+      this.categoryColor});
+
   @override
   _HomeCardState createState() => _HomeCardState();
 }
 
 class _HomeCardState extends State<HomeCard> {
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,7 +50,7 @@ class _HomeCardState extends State<HomeCard> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   image: DecorationImage(
-                      image: NetworkImage("https://r-cf.bstatic.com/images/hotel/max1024x768/233/233853949.jpg"),
+                      image: NetworkImage("${widget.photo}"),
                       fit: BoxFit.cover)),
               margin: EdgeInsets.only(left: 10),
             ),
@@ -37,10 +61,10 @@ class _HomeCardState extends State<HomeCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("فيلا للبيع"),
+                      Text("${widget.title}"),
                       Row(
                         children: <Widget>[
-                          Text(("9 دقيقة")),
+                          Text(("${widget.time}")),
                           Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                           Container(
                             width: 20,
@@ -55,25 +79,25 @@ class _HomeCardState extends State<HomeCard> {
                     ],
                   ),
                   Padding(padding: EdgeInsets.symmetric(vertical: 1)),
-                  Text("150 ريال-  سنوي"),
+                  Text("${widget.price} درهم "),
                   Padding(padding: EdgeInsets.symmetric(vertical: 2)),
                   Row(
                     children: <Widget>[
-                      Text("3"),
+                      Text("${widget.numberOfRooms}"),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                       Image.asset(
                         'assets/icons/bed.png',
                         scale: 3.3,
                       ),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 7)),
-                      Text("2"),
+                      Text("${widget.numberOfBathRooms}"),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                       Image.asset(
                         'assets/icons/bath.png',
                         scale: 3.3,
                       ),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 7)),
-                      Text("1500"),
+                      Text("${widget.size}"),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                       Image.asset(
                         'assets/icons/roomArea.png',
@@ -87,10 +111,18 @@ class _HomeCardState extends State<HomeCard> {
                       Image.asset(
                         'assets/icons/pin.png',
                         scale: 4.5,
-                        color: Color(0xFFFD797F),
+                        color: Color(widget.categoryColor),
                       ),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                      Text('فيلا للبيع')
+                      SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.5,
+                        height: 30,
+                        child: Text('${widget.address}',
+                          overflow: TextOverflow.ellipsis,),
+                      )
                     ],
                   )
                 ],

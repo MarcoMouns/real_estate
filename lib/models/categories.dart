@@ -1,7 +1,7 @@
 class CategoriesModel {
   int id;
   String name;
-  String color;
+  int color;
 
   CategoriesModel({this.id, this.name, this.color});
 
@@ -9,7 +9,7 @@ class CategoriesModel {
     return CategoriesModel(
       id: parsedJson['id'] ?? 0,
       name: parsedJson['name'] ?? 'unTitled',
-      color: parsedJson['color'] ?? 'C0C0C0',
+      color: int.parse(parsedJson['color']) ?? 0xFFC0C0C0,
     );
   }
 }

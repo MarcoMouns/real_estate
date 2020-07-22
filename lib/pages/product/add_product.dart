@@ -508,11 +508,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     .width * 0.2,
                                 child: TextField(
                                   controller: areaController,
-                                  focusNode: areaNode,
-                                  maxLength: 6,
-                                  decoration: InputDecoration(
-                                      hintText: "0", counterText: ""),
-                                ),
+                                            focusNode: areaNode,
+                                            keyboardType: TextInputType.number,
+                                            enableInteractiveSelection: false,
+                                            maxLength: 6,
+                                            decoration: InputDecoration(
+                                                hintText: "0", counterText: ""),
+                                          ),
                               ),
                               Text("متر")
                             ],
@@ -864,6 +866,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   child: TextField(
                                     controller: streetWideController,
                                     focusNode: streetWideNode,
+                                    keyboardType: TextInputType.number,
+                                    enableInteractiveSelection: false,
                                     maxLength: 6,
                                     decoration: InputDecoration(
                                         hintText: "0", counterText: ""),
@@ -987,6 +991,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   child: TextField(
                                     controller: priceController,
                                     focusNode: priceNode,
+                                    enableInteractiveSelection: false,
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         hintText: "0", counterText: ""),

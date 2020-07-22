@@ -17,7 +17,7 @@ class GetCategories {
     } on DioError catch (e) {
       print('error from get categoreis => ${e.response.data}');
       categoriesModel
-          .add(CategoriesModel(id: 0, name: "unTitled", color: "C0C0C0"));
+          .add(CategoriesModel(id: 0, name: "unTitled", color: 0xFFC0C0C0));
     }
     return categoriesModel;
   }

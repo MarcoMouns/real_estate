@@ -3,10 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/models/categories.dart';
+import 'package:realestate/models/produc_mini_model.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
+import 'package:realestate/services/get_categories.dart';
+import 'package:realestate/services/get_mini_product.dart';
+import 'package:realestate/services/post_views.dart';
 import 'package:realestate/widgets/home_card.dart';
 
 import 'options/callUs.dart';
@@ -21,15 +27,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentPage = 0;
+  int apiPage = 1;
+  int categoryId = 0;
   bool _isVisible = true;
-  bool _lights = false;
+  bool fromTwoWeeksAgoBool = false;
+  bool isThereNextPage = true;
+  bool isLoadingNewData = false;
+  bool isLoading = true;
   String bedDropdownValue;
   String bathDropdownValue;
   ScrollController _hideButtonController;
   StreamController<double> controller = StreamController<double>.broadcast();
   List<String> numberOfBedsList = List<String>();
   List<String> numberOfBathsList = List<String>();
+  List<ProductMiniModel> productMiniModelList = List<ProductMiniModel>();
+  List<CategoriesModel> categoriesModel = List<CategoriesModel>();
   var selectedRange = RangeValues(0, 1000000);
+  Position position;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   final pageController = PageController(
@@ -50,6 +64,17 @@ class _HomeState extends State<Home> {
     searchNode.unfocus();
   }
 
+  getCategories() async {
+    categoriesModel = await GetCategories().getCategories();
+    categoriesModel.insert(
+        0,
+        CategoriesModel(
+          id: 0,
+          name: 'كل المتاح',
+          color: 0xFFC0C0C0,
+        ));
+  }
+
   bool onWillPop() {
     if (pageController.page.round() == pageController.initialPage)
       return true;
@@ -61,35 +86,115 @@ class _HomeState extends State<Home> {
     }
   }
 
+  getMiniProducts(
+      {String search,
+      int categoryID,
+      double lat,
+      double long,
+      int numberOfRooms,
+      int numberOfBaths,
+      double startPrice,
+      double endPrice,
+      bool fromTwoWeeksAgo}) async {
+    productMiniModelList = await GetMiniProduct().getMiniProduct(
+      apiPage,
+      search: search,
+      categoryID: categoryID,
+      lat: lat,
+      long: long,
+      numberOfRooms: numberOfRooms,
+      numberOfBaths: numberOfBaths,
+      startPrice: startPrice,
+      endPrice: endPrice,
+      fromTwoWeeksAgo: fromTwoWeeksAgo,
+    );
+    isThereNextPage = GetMiniProduct.isThereNextPagebool;
+    print('**************************** $isThereNextPage');
+    isLoading = false;
+    setState(() {});
+  }
+
+  Future<Position> getCurrentLocation() async {
+    return Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
+  getMoreMiniProducts(
+      {String search,
+      int categoryID,
+      double lat,
+      double long,
+      int numberOfRooms,
+      int numberOfBaths,
+      double startPrice,
+      double endPrice,
+      bool fromTwoWeeksAgo}) async {
+    print('hi from get');
+    List<ProductMiniModel> productMiniModelListNew = List<ProductMiniModel>();
+    if (isThereNextPage == true) {
+      apiPage++;
+      productMiniModelListNew = await GetMiniProduct().getMiniProduct(
+        apiPage,
+        search: search,
+        categoryID: categoryID,
+        lat: lat,
+        long: long,
+        numberOfRooms: numberOfRooms,
+        numberOfBaths: numberOfBaths,
+        startPrice: startPrice,
+        endPrice: endPrice,
+        fromTwoWeeksAgo: fromTwoWeeksAgo,
+      );
+      isThereNextPage = GetMiniProduct.isThereNextPagebool;
+      productMiniModelList.addAll(productMiniModelListNew);
+    }
+    isLoadingNewData = false;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    for (int i = 1; i <= 20; i++) {
+    getCategories();
+    getMiniProducts();
+    for (int i = 0; i <= 20; i++) {
       numberOfBedsList.add('$i');
       numberOfBathsList.add('$i');
     }
     _hideButtonController = new ScrollController();
     _hideButtonController.addListener(() async {
-      if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
         _isVisible = false;
       }
-      if (_hideButtonController.position.userScrollDirection == ScrollDirection.forward) {
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.forward) {
         _isVisible = true;
       }
 
-      //TODO:: implement pagination
-//      if (_hideButtonController.position.pixels ==
-//          _hideButtonController.position.maxScrollExtent) {
-//        setState(() {
-//          isLoadingNewData = true;
-//        });
-//        getMoreData();
-//      }
+      if (_hideButtonController.position.pixels ==
+          _hideButtonController.position.maxScrollExtent) {
+        setState(() {
+          isLoadingNewData = true;
+        });
+        getMoreMiniProducts(
+          search: searchController.text,
+          categoryID: categoryId,
+          numberOfRooms:
+              bedDropdownValue == null ? 0 : int.parse(bedDropdownValue),
+          numberOfBaths:
+              bathDropdownValue == null ? 0 : int.parse(bathDropdownValue),
+          startPrice: selectedRange.start,
+          endPrice: selectedRange.end,
+          fromTwoWeeksAgo: fromTwoWeeksAgoBool,
+        );
+      }
       if (_isVisible == null) _isVisible = true;
       // setState(() {});
       controller.sink.add(1.0);
     });
   }
+
 
   @override
   void dispose() {
@@ -99,115 +204,184 @@ class _HomeState extends State<Home> {
 
   ///******************homepage in pageViewr******************
   Widget homePage() {
-    return Column(
-      children: <Widget>[
-        //Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
-        Expanded(
-          flex: 1,
-          child: Material(
-            elevation: 1,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25),
-                  )),
-              padding: EdgeInsets.only(bottom: 20),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
-                      controller: searchController,
-                      focusNode: searchNode,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 0.0,
-                            vertical: 0.0,
-                          ),
-                          prefixIcon: Image.asset(
-                            'assets/icons/search.png',
-                            scale: 3.5,
-                          ),
-                          filled: true,
-                          fillColor: Color(0xFFF2F3F5),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            borderSide: BorderSide(color: Color(0xFFF2F3F5)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            borderSide: BorderSide(color: Color(0xFFF2F3F5)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            borderSide: BorderSide(color: Colors.cyan),
-                          ),
-                          hintText: "${AppLocalizations.of(context).translate('search')}"),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 20)),
-                  SizedBox(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width * 0.95,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                width: 20,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.grey,
+    return SingleChildScrollView(
+        controller: _hideButtonController,
+        child: GestureDetector(
+          onTap: () => unFocus(),
+          child: Column(
+            children: <Widget>[
+              //Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
+              Material(
+                elevation: 1,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
+                child: Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  alignment: Alignment.topCenter,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      )),
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.8,
+                        child: TextField(
+                          controller: searchController,
+                          focusNode: searchNode,
+                          textInputAction: TextInputAction.search,
+                          onSubmitted: (value) {
+                            apiPage = 1;
+                            getMiniProducts(search: searchController.text);
+                          },
+                          decoration: InputDecoration(
+                              suffixIcon: searchController.text.isEmpty
+                                  ? null
+                                  : InkWell(
+                                onTap: () {
+                                  searchController.clear();
+                                  getMiniProducts();
+                                  unFocus();
+                                  setState(() {});
+                                },
+                                child: Icon(Icons.clear, color: Colors.red,),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 0.0,
+                                vertical: 0.0,
+                              ),
+                              prefixIcon: InkWell(
+                                onTap: () {
+                                  apiPage = 1;
+                                  getMiniProducts(
+                                      search: searchController.text);
+                                },
+                                child: Image.asset(
+                                  'assets/icons/search.png',
+                                  scale: 3.5,
                                 ),
                               ),
-                              Text('كل المتاح')
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                              filled: true,
+                              fillColor: Color(0xFFF2F3F5),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(20)),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF2F3F5)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(20)),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF2F3F5)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(20)),
+                                borderSide: BorderSide(color: Colors.cyan),
+                              ),
+                              hintText: "${AppLocalizations.of(context)
+                                  .translate('search')}"),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 20)),
+                      SizedBox(
+                        height: 30,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.95,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categoriesModel.length,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                apiPage = 1;
+                                categoryId = categoriesModel[index].id;
+                                getMiniProducts(search: searchController.text,
+                                    categoryID: categoriesModel[index].id);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 20,
+                                      height: 5,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        color: Color(
+                                            categoriesModel[index].color),
+                                      ),
+                                    ),
+                                    Text('${categoriesModel[index].name}')
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: ListView.builder(
-            controller: _hideButtonController,
-            itemCount: 5,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ProductDetails(),
-                    ));
-                  },
-                  child: HomeCard(),
                 ),
-              );
-            },
+              ),
+              isLoading ? Center(child: CircularProgressIndicator(),) :
+              ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: productMiniModelList.length,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: InkWell(
+                      onTap: () {
+                        PostViews().postViews(productMiniModelList[index].id);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetails(productMiniModelList[index].id),
+                        ));
+                      },
+                      child: HomeCard(
+                        id: productMiniModelList[index].id,
+                        title: productMiniModelList[index].title,
+                        price: productMiniModelList[index].price,
+                        size: productMiniModelList[index].size,
+                        time: productMiniModelList[index].time,
+                        numberOfRooms: productMiniModelList[index]
+                            .numberOfRooms,
+                        numberOfBathRooms: productMiniModelList[index]
+                            .numberOfBathRooms,
+                        address: productMiniModelList[index].address,
+                        photo: productMiniModelList[index].photo,
+                        categoryColor: productMiniModelList[index]
+                            .categoryColor,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              isLoadingNewData ?
+              Center(child: CircularProgressIndicator(),) : Container()
+            ],
           ),
         )
-      ],
     );
   }
 
@@ -233,20 +407,26 @@ class _HomeState extends State<Home> {
                           .width * 0.65,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: 6,
+                        itemCount: categoriesModel.length,
                         itemBuilder: (context, index) {
                           return Padding(
                               padding: EdgeInsets.symmetric(horizontal: 5),
                               child: InkWell(
-                                onTap: null,
+                                onTap: () {
+                                  categoryId = categoriesModel[index].id;
+                                },
                                 child: Container(
                                   width: 80,
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                      border: Border.all(color: Color(0xFFCCCCCC), width: 2)
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20)),
+                                      border: Border.all(color: Color(
+                                          categoriesModel[index].color),
+                                          width: 2)
                                   ),
                                   alignment: Alignment.center,
-                                  child: Text("كل المتاح", style: TextStyle(fontSize: 14),),
+                                  child: Text("${categoriesModel[index].name}",
+                                    style: TextStyle(fontSize: 14),),
                                 ),
                               )
                           );
@@ -254,25 +434,40 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 5),),
-                    Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.65,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
+                    InkWell(
+                      onTap: () async {
+                        position = await getCurrentLocation();
+                        setState(() {});
+                        print(position);
+                      },
+                      child: Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.65,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
-                          border: Border.all(color: Color(0xFFCCCCCC), width: 2)
-                      ),
-                      alignment: Alignment.center,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
-                          Image.asset('assets/icons/pin.png', scale: 4, color: Color(0xFFF99743),),
-                          Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
-                          Text(
-                            "${AppLocalizations.of(context).translate('currentLocation')}", style: TextStyle(fontSize: 18),)
-                        ],
+                          border: Border.all(
+                              color: Color(0xFFCCCCCC), width: 2),
+                          color: position == null ? Colors.transparent : Colors
+                              .blue,
+                        ),
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),),
+                            Image.asset('assets/icons/pin.png', scale: 4,
+                              color: Color(0xFFF99743),),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),),
+                            Text(
+                              "${AppLocalizations.of(context).translate(
+                                  'currentLocation')}",
+                              style: TextStyle(fontSize: 18),)
+                          ],
+                        ),
                       ),
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 5),),
@@ -281,8 +476,10 @@ class _HomeState extends State<Home> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/bed.png', scale: 4, color: Color(0xFFF99743),),
-                            Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
+                            Image.asset('assets/icons/bed.png', scale: 4,
+                              color: Color(0xFFF99743),),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),),
                             Text("${AppLocalizations.of(context).translate('bedroomNumber')}"),
                           ],
                         ),
@@ -394,10 +591,10 @@ class _HomeState extends State<Home> {
                     Row(
                       children: <Widget>[
                         CupertinoSwitch(
-                          value: _lights,
+                          value: fromTwoWeeksAgoBool,
                           onChanged: (bool value) {
                             setState(() {
-                              _lights = value;
+                              fromTwoWeeksAgoBool = value;
                             });
                           },
                         ),
@@ -414,6 +611,21 @@ class _HomeState extends State<Home> {
                 FlatButton(
                   child: Text('موافق'),
                   onPressed: () {
+                    apiPage = 1;
+                    getMiniProducts(
+                      search: searchController.text,
+                      categoryID: categoryId,
+                      numberOfRooms: bedDropdownValue == null ? 0 : int.parse(
+                          bedDropdownValue),
+                      numberOfBaths: bathDropdownValue == null ? 0 : int.parse(
+                          bathDropdownValue),
+                      startPrice: selectedRange.start,
+                      endPrice: selectedRange.end,
+                      lat: position.latitude == null ? 0 : position.latitude,
+                      long: position.longitude == null ? 0 : position.longitude,
+                      fromTwoWeeksAgo: fromTwoWeeksAgoBool,
+                    );
+                    setState(() {});
                     Navigator.of(context).pop();
                   },
                 ),
@@ -623,7 +835,11 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => _showMyDialog(),
+            onPressed: () {
+              position = null;
+              setState(() {});
+              _showMyDialog();
+            },
             icon: Icon(
               Icons.filter_list,
               color: Colors.orange,
