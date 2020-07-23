@@ -722,9 +722,13 @@ class _HomeState extends State<Home> {
                             });
                           },
                         ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 10),),
-                        Text("${AppLocalizations.of(context).translate('adDurationSwitch')}", style: TextStyle(
-                            fontSize: 18),)
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                        ),
+                        Text(
+                          "${AppLocalizations.of(context).translate('adDurationSwitch')}",
+                          style: TextStyle(fontSize: 18),
+                        )
                       ],
                     ),
                     Text('Would you like to approve of this message?'),
