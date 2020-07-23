@@ -537,17 +537,20 @@ class _HomeState extends State<Home> {
                                   categoryId = categoriesModel[index].id;
                                 },
                                 child: Container(
-                                  width: 80,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20)),
-                                      border: Border.all(color: Color(
-                                          categoriesModel[index].color),
-                                          width: 2)
-                                  ),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      border: Border.all(
+                                          color: Color(
+                                              categoriesModel[index].color),
+                                          width: 2)),
                                   alignment: Alignment.center,
-                                  child: Text("${categoriesModel[index].name}",
-                                    style: TextStyle(fontSize: 14),),
+                                  child: Text(
+                                    "${categoriesModel[index].name}",
+                                    style: TextStyle(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               )
                           );
