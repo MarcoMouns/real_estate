@@ -7,10 +7,12 @@ import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/categories.dart';
+import 'package:realestate/models/cities.dart';
 import 'package:realestate/models/facade.dart';
 import 'package:realestate/pages/home.dart';
 import 'package:realestate/services/add_product.dart';
 import 'package:realestate/services/get_categories.dart';
+import 'package:realestate/services/get_cities.dart';
 import 'package:realestate/services/get_facades.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -22,6 +24,7 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   int categoryId;
+  int cityId;
   int facadeId;
   int numberOfBeds;
   int numberOfBaths;
@@ -35,6 +38,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   String floorDropdownValue;
   String token;
   String adType = "";
+  String city = "";
 
   bool isLoading = true;
   bool positionError = true;
@@ -47,6 +51,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   bool contentError = false;
   bool priceError = false;
   bool isUploadLoading = false;
+  bool cityError = false;
 
   List<String> numberOfBedsList = List<String>();
   List<String> numberOfBathsList = List<String>();
@@ -54,6 +59,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   List<String> floorList = List<String>();
   List<CategoriesModel> categoriesModel = List<CategoriesModel>();
   List<FacadeModel> facadeModelList = List<FacadeModel>();
+  List<CitiesModel> citiesModelList = List<CitiesModel>();
+  List<File> _images = List<File>();
 
   TextEditingController titleController = TextEditingController();
   TextEditingController addressController = TextEditingController();
@@ -70,9 +77,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   FocusNode priceNode = FocusNode();
 
   Position position;
-  List<File> _images = List<File>();
+
   File video;
+
   final picker = ImagePicker();
+
   PickResult selectedPlace;
 
   VideoPlayerController _videoPlayerController;
@@ -98,6 +107,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   getFacade() async {
     facadeModelList = await GetFacade().getFacade();
+  }
+
+  getCities() async {
+    citiesModelList = await GetCities().getCities();
   }
 
   getLocation() async {
@@ -179,6 +192,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
       priceError = true;
     else
       priceError = false;
+    if (city.isEmpty)
+      cityError = true;
+    else
+      cityError = false;
     if (position != null &&
         categoryId != null &&
         areaController != null &&
@@ -193,6 +210,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         token: token,
         title: titleController.text,
         address: addressController.text,
+        city: cityId,
         categoryId: categoryId,
         lat: position.latitude,
         long: position.longitude,
@@ -231,6 +249,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   getData() async {
     await getCategories();
     await getFacade();
+    await getCities();
     isLoading = false;
     setState(() {});
   }
@@ -421,20 +440,66 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               setState(() {});
                             },
                             child: Text("${value.name}"),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    categoryTextError
-                        ? Text(
-                        '${AppLocalizations.of(context).translate(
-                            'categoryErrorMsg')}',
-                        style: TextStyle(color: Colors.red))
-                        : Container(),
-                    Padding(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      child: InkWell(
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              categoryTextError
+                                  ? Text(
+                                      '${AppLocalizations.of(context).translate('categoryErrorMsg')}',
+                                      style: TextStyle(color: Colors.red))
+                                  : Container(),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+//              height: MediaQuery.of(context).size.height * 0.05,
+//              decoration: BoxDecoration(
+//                borderRadius: BorderRadius.all(Radius.circular(20)),
+//                border: Border.all(color: Color(0xFFCCCCCC))
+//              ),
+                                child: ExpansionTile(
+                                  trailing: Image.asset(
+                                    'assets/icons/downArrow.png',
+                                    scale: 4,
+                                  ),
+                                  title: Row(
+                                    children: <Widget>[
+                                      Image.asset(
+                                        'assets/icons/ad.png',
+                                        scale: 4,
+                                        color: Color(0xFFF99743),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5)),
+                                      Text(
+                                        city.isEmpty
+                                            ? "${AppLocalizations.of(context).translate('cityText')}"
+                                            : "$city",
+                                        style: TextStyle(fontSize: 18),
+                                      )
+                                    ],
+                                  ),
+                                  children: citiesModelList.map((value) {
+                                    return InkWell(
+                                      onTap: () {
+                                        cityId = value.id;
+                                        city = value.name;
+                                        setState(() {});
+                                      },
+                                      child: Text("${value.name}"),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              cityError
+                                  ? Text(
+                                      '${AppLocalizations.of(context).translate('cityErrorMsg')}',
+                                      style: TextStyle(color: Colors.red))
+                                  : Container(),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: InkWell(
                                   onTap: () async {
                                     await getLocation();
 //                          Navigator.push(

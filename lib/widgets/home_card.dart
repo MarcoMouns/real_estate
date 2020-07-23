@@ -37,8 +37,10 @@ class _HomeCardState extends State<HomeCard> {
       borderRadius: BorderRadius.all(Radius.circular(20)),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
-        height: MediaQuery.of(context).size.height * 0.19,
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(12))),
+        height: MediaQuery.of(context).size.height * 0.21,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(12))),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -119,7 +121,6 @@ class _HomeCardState extends State<HomeCard> {
                             .of(context)
                             .size
                             .width * 0.5,
-                        height: 30,
                         child: Text('${widget.address}',
                           overflow: TextOverflow.ellipsis,),
                       )

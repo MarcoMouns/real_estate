@@ -9,10 +9,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/categories.dart';
+import 'package:realestate/models/cities.dart';
+import 'package:realestate/models/map_products.dart';
 import 'package:realestate/models/produc_mini_model.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/services/get_categories.dart';
+import 'package:realestate/services/get_cities.dart';
 import 'package:realestate/services/get_mini_product.dart';
 import 'package:realestate/services/post_views.dart';
 import 'package:realestate/widgets/home_card.dart';
@@ -31,6 +34,7 @@ class _HomeState extends State<Home> {
   int currentPage = 0;
   int apiPage = 1;
   int categoryId = 0;
+
   bool _isVisible = true;
   bool fromTwoWeeksAgoBool = false;
   bool isThereNextPage = true;
@@ -38,19 +42,30 @@ class _HomeState extends State<Home> {
   bool isZoomControlsEnabled = true;
   bool isZoomGesturesEnabled = true;
   bool isLoading = true;
+  bool showCitiesOnMap = false;
+
   String bedDropdownValue;
   String bathDropdownValue;
+
   ScrollController _hideButtonController;
+
   StreamController<double> controller = StreamController<double>.broadcast();
+
   List<String> numberOfBedsList = List<String>();
   List<String> numberOfBathsList = List<String>();
   List<ProductMiniModel> productMiniModelList = List<ProductMiniModel>();
   List<CategoriesModel> categoriesModel = List<CategoriesModel>();
-  List<Marker> _markers = <Marker>[];
+  List<MapProductsModel> mapProductsModelList = List<MapProductsModel>();
+  List<Marker> _productMarkers = <Marker>[];
+  List<Marker> _citiesMarkers = <Marker>[];
+  List<CitiesModel> citiesModelList = List<CitiesModel>();
+
   var selectedRange = RangeValues(0, 1000000);
+
   Position position;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
   final pageController = PageController(
     initialPage: 0,
     keepPage: true,
@@ -60,6 +75,8 @@ class _HomeState extends State<Home> {
     target: LatLng(24.705260, 46.691267),
     zoom: 14.4746,
   );
+  CameraPosition _kCity;
+
   Completer<GoogleMapController> _controller = Completer();
 
   TextEditingController searchController = TextEditingController();
@@ -78,17 +95,6 @@ class _HomeState extends State<Home> {
           name: 'كل المتاح',
           color: 0xFFC0C0C0,
         ));
-  }
-
-  bool onWillPop() {
-    if (pageController.page.round() == pageController.initialPage)
-      return true;
-    else {
-      pageController.previousPage(
-        duration: Duration(milliseconds: 200),
-        curve: Curves.linear,
-      );
-    }
   }
 
   getMiniProducts(
@@ -119,59 +125,11 @@ class _HomeState extends State<Home> {
       target: LatLng(position.latitude, position.longitude),
       zoom: 14.4746,
     );
-    initMarkers();
+    await initCitiesMarkers();
+    await initProductMarkers();
     print('**************************** $isThereNextPage');
     isLoading = false;
     setState(() {});
-  }
-
-  Future<Uint8List> getBytesFromCanvas(
-      int width, int height, String text) async {
-    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
-    final Canvas canvas = Canvas(pictureRecorder);
-    final Paint paint = Paint()..color = Colors.blue;
-    final Radius radius = Radius.circular(50.0);
-    canvas.drawRRect(
-        RRect.fromRectAndCorners(
-          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
-          topLeft: radius,
-          topRight: radius,
-          bottomLeft: radius,
-          bottomRight: radius,
-        ),
-        paint);
-    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
-    painter.text = TextSpan(
-      text: '$text',
-      style: TextStyle(fontSize: 25.0, color: Colors.white),
-    );
-    painter.layout();
-    painter.paint(
-        canvas,
-        Offset((width * 0.5) - painter.width * 0.5,
-            (height * 0.5) - painter.height * 0.5));
-    final img = await pictureRecorder.endRecording().toImage(width, height);
-    final data = await img.toByteData(format: ui.ImageByteFormat.png);
-    return data.buffer.asUint8List();
-  }
-
-  initMarkers() async {
-    productMiniModelList.forEach((element) async {
-      Uint8List markerIcon =
-          await getBytesFromCanvas(200, 100, "${element.price}");
-      _markers.add(Marker(
-          markerId: MarkerId('${element.id}'),
-          position: LatLng(element.lat, element.long),
-          icon: BitmapDescriptor.fromBytes(markerIcon),
-          infoWindow: InfoWindow(title: 'The title of the marker')));
-    });
-    isLoading = false;
-    setState(() {});
-  }
-
-  Future<Position> getCurrentLocation() async {
-    return Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   getMoreMiniProducts(
@@ -207,11 +165,119 @@ class _HomeState extends State<Home> {
     setState(() {});
   }
 
+  getMapProducts({int cityId = 1}) async {
+    mapProductsModelList = await GetMiniProduct().getMapProducts(cityId);
+    setState(() {});
+  }
+
+  getCities() async {
+    citiesModelList = await GetCities().getCities();
+  }
+
+  Future<Uint8List> getBytesFromCanvas(
+      int width, int height, String text) async {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.blue;
+    final Radius radius = Radius.circular(50.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      text: '$text',
+      style: TextStyle(fontSize: 25.0, color: Colors.white),
+    );
+    painter.layout();
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.5,
+            (height * 0.5) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data.buffer.asUint8List();
+  }
+
+  initCitiesMarkers() async {
+    citiesModelList.forEach((element) async {
+      GoogleMapController controller = await _controller.future;
+      Uint8List markerIcon =
+      await getBytesFromCanvas(200, 100, "${element.name}");
+      _citiesMarkers.add(Marker(
+        markerId: MarkerId('${element.id}'),
+        position: LatLng(element.lat, element.long),
+        icon: BitmapDescriptor.fromBytes(markerIcon),
+        onTap: () {
+          isZoomControlsEnabled = true;
+          isZoomGesturesEnabled = true;
+          showCitiesOnMap = false;
+          print(isZoomControlsEnabled);
+          print(isZoomGesturesEnabled);
+          print(showCitiesOnMap);
+          _kCity = CameraPosition(
+              target: LatLng(element.lat, element.long),
+              zoom: 14.0);
+          controller.animateCamera(CameraUpdate.newCameraPosition(_kCity));
+          setState(() {});
+        },
+        infoWindow: InfoWindow(title: '${element.name}'),
+      ),
+      );
+    });
+  }
+
+  initProductMarkers() async {
+    mapProductsModelList.forEach((element) async {
+      Uint8List markerIcon =
+      await getBytesFromCanvas(200, 100, "${element.price}");
+      _productMarkers.add(Marker(
+          markerId: MarkerId('${element.id}'),
+          position: LatLng(element.lat, element.long),
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  ProductDetails(element.id),
+            ));
+          },
+          infoWindow: InfoWindow(title: '${element.price}')));
+    });
+  }
+
+  goToACity() {
+    showCitiesOnMap = true;
+    setState(() {});
+  }
+
+  Future<Position> getCurrentLocation() async {
+    return Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
+  bool onWillPop() {
+    if (pageController.page.round() == pageController.initialPage)
+      return true;
+    else {
+      pageController.previousPage(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getCategories();
     getMiniProducts();
+    getMapProducts();
+    getCities();
     for (int i = 0; i <= 20; i++) {
       numberOfBedsList.add('$i');
       numberOfBathsList.add('$i');
@@ -929,7 +995,9 @@ class _HomeState extends State<Home> {
                 homePage(),
                 GoogleMap(
                   mapType: MapType.normal,
-                  markers: Set<Marker>.of(_markers),
+                  markers: showCitiesOnMap
+                      ? Set<Marker>.of(_citiesMarkers)
+                      : Set<Marker>.of(_productMarkers),
                   zoomControlsEnabled: isZoomControlsEnabled,
                   zoomGesturesEnabled: isZoomGesturesEnabled,
                   initialCameraPosition: _kGooglePlex,
@@ -941,6 +1009,13 @@ class _HomeState extends State<Home> {
                     if (position.zoom < 9) {
                       isZoomControlsEnabled = false;
                       isZoomGesturesEnabled = false;
+                      showCitiesOnMap = true;
+                      setState(() {});
+                    }
+                    else if (position.zoom == 14) {
+                      isZoomControlsEnabled = true;
+                      isZoomGesturesEnabled = true;
+                      showCitiesOnMap = false;
                       setState(() {});
                     }
                   },

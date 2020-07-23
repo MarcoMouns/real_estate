@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:realestate/models/map_products.dart';
 import 'package:realestate/models/produc_mini_model.dart';
 
 class GetMiniProduct {
@@ -58,6 +59,22 @@ class GetMiniProduct {
       print('error in getMiniProduct => ${e.response.data}');
     }
     return productMiniModelList;
+  }
+
+  Future<List<MapProductsModel>> getMapProducts(int cityId) async {
+    Response response;
+    List<MapProductsModel> mapProductsModelList = List<MapProductsModel>();
+    try {
+      String city = "city=$cityId";
+      response = await Dio().get("$url$product$city");
+      List data = response.data;
+      data.forEach((element) {
+        mapProductsModelList.add(MapProductsModel.fromApi(element));
+      });
+    } on DioError catch (e) {
+      print('error in get map products => ${e.response.data}');
+    }
+    return mapProductsModelList;
   }
 
   bool isThereNextPage(String next) {

@@ -15,6 +15,7 @@ class AddProduct {
       double long,
       String area,
       int facade,
+      int city,
       int numberOfBeds = 0,
       int numberOfBaths = 0,
       int lounges = 0,
@@ -49,6 +50,7 @@ class AddProduct {
       "category": "$categoryId",
       "facade": facade,
       "photos": multipartFilePhotosList,
+      "city": "$city"
     });
 
     try {

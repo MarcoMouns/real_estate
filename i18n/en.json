@@ -75,5 +75,7 @@
   "phoneAlreadyRegistered": "Phone already registered",
   "phoneLengthError": "Phone length must be 9",
   "User Does not exist": "User Does not exist",
-  "wrongPassword": "Wrong password"
+  "wrongPassword": "Wrong password",
+  "cityErrorMsg": "please choose a city",
+  "cityText": "choose a city"
 }
