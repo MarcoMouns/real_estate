@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/categories.dart';
@@ -72,6 +73,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   List<File> _images = List<File>();
   File video;
   final picker = ImagePicker();
+  PickResult selectedPlace;
 
   VideoPlayerController _videoPlayerController;
 
@@ -433,18 +435,73 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       padding:
                       EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       child: InkWell(
-                        onTap: () => getLocation(),
-                        child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.9,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            border: Border.all(color: Color(0xFFCCCCCC)),
-                            color: positionError
+                                  onTap: () async {
+                                    await getLocation();
+//                          Navigator.push(
+//                            context,
+//                            MaterialPageRoute(
+//                              builder: (context) {
+//                                return PlacePicker(
+//                                  apiKey: "AIzaSyCYPXlLrEHISDyVdJ1C9zSEBH1bQfiXJfo",
+//                                  initialPosition: LatLng(position.latitude, position.longitude),
+//                                  useCurrentLocation: true,
+//                                  //usePlaceDetailSearch: true,
+//                                  onPlacePicked: (result) {
+//                                    selectedPlace = result;
+//                                    Navigator.of(context).pop();
+//                                    setState(() {});
+//                                  },
+//                                  //forceSearchOnZoomChanged: true,
+//                                  //automaticallyImplyAppBarLeading: false,
+//                                  //autocompleteLanguage: "ko",
+//                                  //region: 'au',
+//                                  //selectInitialPosition: true,
+//                                  // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+//                                  //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
+//                                  //   return isSearchBarFocused
+//                                  //       ? Container()
+//                                  //       : FloatingCard(
+//                                  //           bottomPosition: 0.0,    // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+//                                  //           leftPosition: 0.0,
+//                                  //           rightPosition: 0.0,
+//                                  //           width: 500,
+//                                  //           borderRadius: BorderRadius.circular(12.0),
+//                                  //           child: state == SearchingState.Searching
+//                                  //               ? Center(child: CircularProgressIndicator())
+//                                  //               : RaisedButton(
+//                                  //                   child: Text("Pick Here"),
+//                                  //                   onPressed: () {
+//                                  //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
+//                                  //                     //            this will override default 'Select here' Button.
+//                                  //                     print("do something with [selectedPlace] data");
+//                                  //                     Navigator.of(context).pop();
+//                                  //                   },
+//                                  //                 ),
+//                                  //         );
+//                                  // },
+//                                  // pinBuilder: (context, state) {
+//                                  //   if (state == PinState.Idle) {
+//                                  //     return Icon(Icons.favorite_border);
+//                                  //   } else {
+//                                  //     return Icon(Icons.favorite);
+//                                  //   }
+//                                  // },
+//                                );
+//                              },
+//                            ),
+//                          );
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      border:
+                                          Border.all(color: Color(0xFFCCCCCC)),
+                                      color: positionError
                                 ? Colors.transparent
                                 : Colors.blue,
                           ),

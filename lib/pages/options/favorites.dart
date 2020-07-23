@@ -3,7 +3,7 @@ import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/options/profile.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
-import 'package:realestate/widgets/home_card.dart';
+import 'package:realestate/widgets/fake_home_card.dart';
 
 import '../home.dart';
 import 'callUs.dart';
@@ -240,7 +240,7 @@ class _FavoritesState extends State<Favorites> {
                           builder: (context) => ProductDetails(1),
                         ));
                       },
-                      child: HomeCard(),
+                      child: FakeHomeCard(),
                     ),
                   );
                 },

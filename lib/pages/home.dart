@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,8 @@ class _HomeState extends State<Home> {
   bool fromTwoWeeksAgoBool = false;
   bool isThereNextPage = true;
   bool isLoadingNewData = false;
+  bool isZoomControlsEnabled = true;
+  bool isZoomGesturesEnabled = true;
   bool isLoading = true;
   String bedDropdownValue;
   String bathDropdownValue;
@@ -42,6 +46,7 @@ class _HomeState extends State<Home> {
   List<String> numberOfBathsList = List<String>();
   List<ProductMiniModel> productMiniModelList = List<ProductMiniModel>();
   List<CategoriesModel> categoriesModel = List<CategoriesModel>();
+  List<Marker> _markers = <Marker>[];
   var selectedRange = RangeValues(0, 1000000);
   Position position;
 
@@ -51,8 +56,8 @@ class _HomeState extends State<Home> {
     keepPage: true,
   );
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(24.705260, 46.691267),
     zoom: 14.4746,
   );
   Completer<GoogleMapController> _controller = Completer();
@@ -109,7 +114,57 @@ class _HomeState extends State<Home> {
       fromTwoWeeksAgo: fromTwoWeeksAgo,
     );
     isThereNextPage = GetMiniProduct.isThereNextPagebool;
+    position = await getCurrentLocation();
+    _kGooglePlex = CameraPosition(
+      target: LatLng(position.latitude, position.longitude),
+      zoom: 14.4746,
+    );
+    initMarkers();
     print('**************************** $isThereNextPage');
+    isLoading = false;
+    setState(() {});
+  }
+
+  Future<Uint8List> getBytesFromCanvas(
+      int width, int height, String text) async {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.blue;
+    final Radius radius = Radius.circular(50.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      text: '$text',
+      style: TextStyle(fontSize: 25.0, color: Colors.white),
+    );
+    painter.layout();
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.5,
+            (height * 0.5) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data.buffer.asUint8List();
+  }
+
+  initMarkers() async {
+    productMiniModelList.forEach((element) async {
+      Uint8List markerIcon =
+          await getBytesFromCanvas(200, 100, "${element.price}");
+      _markers.add(Marker(
+          markerId: MarkerId('${element.id}'),
+          position: LatLng(element.lat, element.long),
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          infoWindow: InfoWindow(title: 'The title of the marker')));
+    });
     isLoading = false;
     setState(() {});
   }
@@ -869,14 +924,27 @@ class _HomeState extends State<Home> {
                   currentPage = index;
                 });
               },
+              physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
                 homePage(),
-                Center(
-                  child: Icon(
-                    Icons.map,
-                    size: 50,
-                  ),
-                )
+                GoogleMap(
+                  mapType: MapType.normal,
+                  markers: Set<Marker>.of(_markers),
+                  zoomControlsEnabled: isZoomControlsEnabled,
+                  zoomGesturesEnabled: isZoomGesturesEnabled,
+                  initialCameraPosition: _kGooglePlex,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  onCameraMove: (position) {
+                    print(position.zoom);
+                    if (position.zoom < 9) {
+                      isZoomControlsEnabled = false;
+                      isZoomGesturesEnabled = false;
+                      setState(() {});
+                    }
+                  },
+                ),
               ],
             ),
           ),

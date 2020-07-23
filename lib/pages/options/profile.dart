@@ -5,7 +5,7 @@ import 'package:realestate/I10n/AppLanguage.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
-import 'package:realestate/widgets/home_card.dart';
+import 'package:realestate/widgets/fake_home_card.dart';
 import 'package:realestate/widgets/logout_dialog.dart';
 
 import '../home.dart';
@@ -305,7 +305,7 @@ class _ProfileState extends State<Profile> {
                           builder: (context) => ProductDetails(1),
                         ));
                       },
-                      child: HomeCard(),
+                      child: FakeHomeCard(),
                     ),
                   );
                 },

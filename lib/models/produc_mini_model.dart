@@ -9,18 +9,23 @@ class ProductMiniModel {
   String address;
   String photo;
   int categoryColor;
+  double lat;
+  double long;
 
-  ProductMiniModel(
-      {this.id,
-      this.title,
-      this.price,
-      this.size,
-      this.time,
-      this.numberOfRooms,
-      this.numberOfBathRooms,
-      this.address,
-      this.photo,
-      this.categoryColor});
+  ProductMiniModel({
+    this.id,
+    this.title,
+    this.price,
+    this.size,
+    this.time,
+    this.numberOfRooms,
+    this.numberOfBathRooms,
+    this.address,
+    this.photo,
+    this.categoryColor,
+    this.long,
+    this.lat,
+  });
 
   factory ProductMiniModel.fromJson(Map<String, dynamic> parsedJson) {
     return ProductMiniModel(
@@ -35,6 +40,8 @@ class ProductMiniModel {
       photo: parsedJson['photo'] ??
           "https://top10cairo.com/wp-content/uploads/2020/05/Top-Best-Real-Estate-Companies-Agencies-Brokers-Cairo-Egypt.jpg",
       categoryColor: int.parse(parsedJson['categoryColor']) ?? 0xFFC0C0C0,
+      long: parsedJson['longitude'],
+      lat: parsedJson['latitude'],
     );
   }
 }
