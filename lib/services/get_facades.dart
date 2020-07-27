@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:realestate/models/facade.dart';
 
 class GetFacade {
-  final String url = "http://134.209.25.40/";
+  final String url = "http://api.naffeth.com/";
   final String facade = "facade/";
 
   Future<List<FacadeModel>> getFacade() async {

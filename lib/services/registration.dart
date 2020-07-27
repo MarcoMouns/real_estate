@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationAndOtp {
-  final String _url = "http://134.209.25.40/";
+  final String _url = "http://api.naffeth.com/";
   final String _registration = "registration/";
   final String _otp = "otp";
   FormData _formData;

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:realestate/models/categories.dart';
 
 class GetCategories {
-  final String url = "http://134.209.25.40/";
+  final String url = "http://api.naffeth.com/";
   final String categories = "category/";
 
   Future<List<CategoriesModel>> getCategories() async {

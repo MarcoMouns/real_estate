@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
-  final String _url = "http://134.209.25.40/";
+  final String _url = "http://api.naffeth.com/";
   final String _login = "login";
   FormData _formData;
 

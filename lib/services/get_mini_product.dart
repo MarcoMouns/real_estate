@@ -3,7 +3,7 @@ import 'package:realestate/models/map_products.dart';
 import 'package:realestate/models/produc_mini_model.dart';
 
 class GetMiniProduct {
-  final String url = "http://134.209.25.40/";
+  final String url = "http://api.naffeth.com/";
   final String product = "product/?";
   static bool isThereNextPagebool;
 

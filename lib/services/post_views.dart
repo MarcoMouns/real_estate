@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PostViews {
-  final String url = "http://134.209.25.40/";
+  final String url = "http://api.naffeth.com/";
   final String views = "viewProduct";
 
   postViews(int productId) async {
