@@ -7,6 +7,7 @@ import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/widgets/fake_home_card.dart';
 import 'package:realestate/widgets/logout_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../home.dart';
 import 'callUs.dart';
@@ -52,6 +53,29 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  String fullName;
+  String token = "";
+  bool isLoading = true;
+
+  getName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? "";
+    if (token.isNotEmpty) {
+      fullName = prefs.getString('name');
+      print(fullName);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getName();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +111,7 @@ class _ProfileState extends State<Profile> {
                       scale: 5,
                     ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                    Text('محمد احمد'),
+                    Text('$fullName'),
                   ],
                 ),
               ),
@@ -129,7 +153,8 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('mamlakaArea')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('mamlakaArea')}"),
               leading: Image.asset(
                 'assets/icons/country.png',
                 scale: 3.5,
@@ -161,7 +186,8 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('aboutApp')}"),
+              title:
+              Text("${AppLocalizations.of(context).translate('aboutApp')}"),
               leading: Image.asset(
                 'assets/icons/aboutApp.png',
                 scale: 3.5,
@@ -177,7 +203,8 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('callUs')}"),
+              title:
+              Text("${AppLocalizations.of(context).translate('callUs')}"),
               leading: Image.asset(
                 'assets/icons/phoneHolder.png',
                 scale: 3.5,
@@ -195,7 +222,8 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('favorites')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('favorites')}"),
               leading: Image.asset(
                 'assets/icons/roundStar.png',
                 scale: 1.7,
@@ -213,15 +241,16 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('setting')}"),
+              title:
+              Text("${AppLocalizations.of(context).translate('setting')}"),
               leading: Image.asset(
                 'assets/icons/star.png',
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Profile(),)
-                );
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Profile(),
+                ));
               },
             ),
           ],
@@ -237,7 +266,10 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
         actions: <Widget>[
           InkWell(
-            onTap: () => showDialog(context: context, builder: (BuildContext context) => LogoutDialog()),
+            onTap: () =>
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => LogoutDialog()),
             child: Image.asset(
               'assets/icons/back.png',
               scale: 3.7,
@@ -255,13 +287,16 @@ class _ProfileState extends State<Profile> {
                 scale: 4,
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-              Text('محمد محمد'),
+              Text('$fullName'),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   InkWell(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChangeProfile(),)),
+                    onTap: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ChangeProfile(),
+                        )),
                     child: Row(
                       children: <Widget>[
                         Image.asset(
@@ -269,12 +304,17 @@ class _ProfileState extends State<Profile> {
                           scale: 3.5,
                         ),
                         Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                        Text("${AppLocalizations.of(context).translate('editProfile')}"),
+                        Text(
+                            "${AppLocalizations.of(context).translate(
+                                'editProfile')}"),
                       ],
                     ),
                   ),
                   InkWell(
-                    onTap: () => showCupertinoModalPopup(context: context, builder: (BuildContext context) => popUp()),
+                    onTap: () =>
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (BuildContext context) => popUp()),
                     child: Row(
                       children: <Widget>[
                         Icon(
@@ -282,7 +322,9 @@ class _ProfileState extends State<Profile> {
                           color: Color(0xFF363636),
                         ),
                         Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                        Text("${AppLocalizations.of(context).translate('changeLang')}"),
+                        Text(
+                            "${AppLocalizations.of(context).translate(
+                                'changeLang')}"),
                       ],
                     ),
                   ),

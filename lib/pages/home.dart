@@ -19,6 +19,7 @@ import 'package:realestate/services/get_cities.dart';
 import 'package:realestate/services/get_mini_product.dart';
 import 'package:realestate/services/post_views.dart';
 import 'package:realestate/widgets/home_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'options/callUs.dart';
 import 'options/favorites.dart';
@@ -271,9 +272,25 @@ class _HomeState extends State<Home> {
     }
   }
 
+  String fullName;
+  String token = "";
+
+  getName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? "";
+    if (token.isNotEmpty) {
+      fullName = prefs.getString('name');
+      print(fullName);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getName();
     getCategories();
     getMiniProducts();
     getMapProducts();
@@ -813,7 +830,7 @@ class _HomeState extends State<Home> {
                       scale: 5,
                     ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                    Text('محمد احمد'),
+                    Text('$fullName'),
                   ],
                 ),
               ),
