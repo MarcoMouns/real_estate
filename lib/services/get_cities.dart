@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:realestate/models/cities.dart';
 
 class GetCities {
-  final String url = "http://api.naffeth.com//";
+  final String url = "http://api.naffeth.com/";
   final String city = "city/";
 
   Future<List<CitiesModel>> getCities() async {
