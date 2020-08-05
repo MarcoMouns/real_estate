@@ -77,5 +77,6 @@
   "User Does not exist": "هذا المستخدم ليس موجود",
   "wrongPassword": "كلمة المرور غير صحيحة",
   "cityErrorMsg": "من فضلك اختر المدينه",
-  "cityText": "المدينه"
+  "cityText": "المدينه",
+  "noAds": "لا يوجد اعلانات"
 }

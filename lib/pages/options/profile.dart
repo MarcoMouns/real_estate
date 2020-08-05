@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:realestate/I10n/AppLanguage.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/models/produc_mini_model.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
-import 'package:realestate/widgets/fake_home_card.dart';
+import 'package:realestate/services/getUserProduct.dart';
+import 'package:realestate/widgets/home_card.dart';
 import 'package:realestate/widgets/logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,6 +59,14 @@ class _ProfileState extends State<Profile> {
   String token = "";
   bool isLoading = true;
 
+  List<ProductMiniModel> productMiniModelList = List<ProductMiniModel>();
+
+  getUserProducts() async {
+    productMiniModelList = await GetUserProduct().getProduct();
+    isLoading = false;
+    setState(() {});
+  }
+
   getName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? "";
@@ -74,6 +84,7 @@ class _ProfileState extends State<Profile> {
     // TODO: implement initState
     super.initState();
     getName();
+    getUserProducts();
   }
 
   @override
@@ -187,7 +198,7 @@ class _ProfileState extends State<Profile> {
             ),
             ListTile(
               title:
-              Text("${AppLocalizations.of(context).translate('aboutApp')}"),
+                  Text("${AppLocalizations.of(context).translate('aboutApp')}"),
               leading: Image.asset(
                 'assets/icons/aboutApp.png',
                 scale: 3.5,
@@ -333,21 +344,38 @@ class _ProfileState extends State<Profile> {
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               Text("${AppLocalizations.of(context).translate('realEstate')}"),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              ListView.builder(
+              productMiniModelList.isEmpty
+                  ? Text("${AppLocalizations.of(context).translate('noAds')}")
+                  : ListView.builder(
                 primary: false,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 5,
+                itemCount: productMiniModelList.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ProductDetails(1),
+                          builder: (context) =>
+                              ProductDetails(productMiniModelList[index].id),
                         ));
                       },
-                      child: FakeHomeCard(),
+                      child: HomeCard(
+                        id: productMiniModelList[index].id,
+                        title: productMiniModelList[index].title,
+                        price: productMiniModelList[index].price,
+                        size: productMiniModelList[index].size,
+                        time: productMiniModelList[index].time,
+                        numberOfRooms:
+                        productMiniModelList[index].numberOfRooms,
+                        numberOfBathRooms:
+                        productMiniModelList[index].numberOfBathRooms,
+                        address: productMiniModelList[index].address,
+                        photo: productMiniModelList[index].photo,
+                        categoryColor:
+                        productMiniModelList[index].categoryColor,
+                      ),
                     ),
                   );
                 },

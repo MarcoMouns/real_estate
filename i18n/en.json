@@ -77,5 +77,6 @@
   "User Does not exist": "User Does not exist",
   "wrongPassword": "Wrong password",
   "cityErrorMsg": "please choose a city",
-  "cityText": "choose a city"
+  "cityText": "choose a city",
+  "noAds": "There is no ads"
 }
