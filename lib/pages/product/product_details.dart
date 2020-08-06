@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/product_model.dart';
+import 'package:realestate/pages/auth/login.dart';
 import 'package:realestate/services/get_product.dart';
+import 'package:realestate/services/userFavorite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetails extends StatefulWidget {
   int productId;
@@ -29,7 +32,6 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   CameraPosition _kGooglePlex;
 
-
   static List<T> map<T>(List list, Function handler) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
@@ -37,6 +39,10 @@ class _ProductDetailsState extends State<ProductDetails> {
     }
 
     return result;
+  }
+
+  Future favorite(int id) async {
+    await UserFavorite().userFavorite(id: id);
   }
 
   getProductDetails() async {
@@ -51,7 +57,6 @@ class _ProductDetailsState extends State<ProductDetails> {
       zoom: 14.4746,
     );
 
-
     _markers.add(Marker(
       // This marker id can be anything that uniquely identifies each marker.
       markerId: MarkerId("currentState"),
@@ -60,8 +65,8 @@ class _ProductDetailsState extends State<ProductDetails> {
         // title is the address
         title: "${productModel.title}",
         // snippet are the coordinates of the position
-        snippet: 'Lat: ${productModel.latitude}, Lng: ${productModel
-            .longitude}',
+        snippet:
+            'Lat: ${productModel.latitude}, Lng: ${productModel.longitude}',
       ),
       icon: BitmapDescriptor.defaultMarker,
     ));
@@ -99,23 +104,50 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading
+        ? Center(
+      child: CircularProgressIndicator(),
+    )
+        : Scaffold(
       appBar: AppBar(
         title: Text('category name'),
         centerTitle: true,
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 5),
-            child: Icon(
-              Icons.star_border,
-              color: Color(0xFFF99743),
+            child: GestureDetector(
+              onTap: () async {
+                SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+                try {
+                  if (prefs.getString('token') != null) {
+                    await favorite(widget.productId);
+                    setState(() {
+                      productModel.favored = !productModel.favored;
+                    });
+                  } else {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Login()));
+                  }
+                } catch (e) {
+                  print("error in like");
+                }
+              },
+              child: productModel.favored
+                  ? Icon(
+                Icons.star,
+                color: Color(0xFFF99743),
+              )
+                  : Icon(
+                Icons.star_border,
+                color: Color(0xFFF99743),
+              ),
             ),
           )
         ],
       ),
       body: Scaffold(
-        body: isLoading ? Center(child: CircularProgressIndicator(),) :
-        SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               CarouselSlider(
@@ -144,8 +176,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                           vertical: 10.0, horizontal: 5.0),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: _current == index ? Color(0xFF0D986A) : Color(
-                              0xFFD8D8D8)),
+                          color: _current == index
+                              ? Color(0xFF0D986A)
+                              : Color(0xFFD8D8D8)),
                     );
                   },
                 ),
@@ -167,7 +200,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                               "${productModel.date}",
                               style: TextStyle(color: Color(0xFFACB1C0)),
                             ),
-                            Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                            Padding(
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5)),
                             Container(
                               width: 20,
                               height: 20,
@@ -182,7 +217,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     Padding(padding: EdgeInsets.only(top: 20)),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         children: <Widget>[
                           Image.asset(
@@ -203,9 +239,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -217,9 +255,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('area')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'area')}')
                             ],
                           ),
                           Text("${productModel.area} متر ")
@@ -227,9 +268,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -239,10 +282,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate(
-                                    'front')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'front')}')
                               ],
                             ),
                             Text("${productModel.facadeName}"),
@@ -251,9 +296,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -265,9 +312,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('bedroomNumber')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'bedroomNumber')}')
                             ],
                           ),
                           Text("${productModel.numberOfRooms}")
@@ -275,9 +325,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -287,10 +339,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate(
-                                    'bathroomNumber')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'bathroomNumber')}')
                               ],
                             ),
                             Text("${productModel.numberOfBathRooms}"),
@@ -299,9 +353,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -313,9 +369,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('lounges')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'lounges')}')
                             ],
                           ),
                           Text("${productModel.numberOfLivingRooms}")
@@ -323,9 +382,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -335,10 +396,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate(
-                                    'streetWidth')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'streetWidth')}')
                               ],
                             ),
                             Text("${productModel.streetWidth} م "),
@@ -347,9 +410,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -361,9 +426,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('floorNumber')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'floorNumber')}')
                             ],
                           ),
                           Text("${productModel.floor}")
@@ -371,9 +439,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -383,10 +453,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate(
-                                    'adNumber')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'adNumber')}')
                               ],
                             ),
                             Text("${productModel.id}"),
@@ -395,9 +467,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -409,9 +483,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('views')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'views')}')
                             ],
                           ),
                           Text("${productModel.views}")
@@ -437,7 +514,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -446,23 +524,30 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   scale: 3,
                                 ),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 8),
-                                      child: Text("${productModel.productCreator
-                                          .name}"),
+                                      child: Text(
+                                          "${productModel.productCreator
+                                              .name}"),
                                     ),
-                                    Padding(padding: EdgeInsets.only(top: 5)),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 5)),
                                     Row(
                                       children: <Widget>[
                                         Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                                            border: Border.all(color: Color(0xFFE0E0E0)),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(20)),
+                                            border: Border.all(
+                                                color: Color(0xFFE0E0E0)),
                                           ),
-                                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 3),
                                           child: Row(
                                             children: <Widget>[
                                               Image.asset(
@@ -470,17 +555,27 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                 scale: 6,
                                                 color: Color(0xFF0D986A),
                                               ),
-                                              Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                                              Text("${AppLocalizations.of(context).translate('call')}"),
+                                              Padding(
+                                                  padding: EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 5)),
+                                              Text(
+                                                  "${AppLocalizations.of(
+                                                      context).translate(
+                                                      'call')}"),
                                             ],
                                           ),
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                                            border: Border.all(color: Color(0xFFE0E0E0)),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(20)),
+                                            border: Border.all(
+                                                color: Color(0xFFE0E0E0)),
                                           ),
-                                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 3),
                                           child: Row(
                                             children: <Widget>[
                                               Image.asset(
@@ -488,9 +583,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                 scale: 6,
                                                 color: Color(0xFF0D986A),
                                               ),
-                                              Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                                              Text("${AppLocalizations.of(
-                                                  context).translate('chat')}"),
+                                              Padding(
+                                                  padding: EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 5)),
+                                              Text(
+                                                  "${AppLocalizations.of(
+                                                      context).translate(
+                                                      'chat')}"),
                                             ],
                                           ),
                                         ),
@@ -517,8 +617,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           .width * 0.9,
                       height: 300,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(10))),
                       child: GoogleMap(
                         mapType: MapType.normal,
                         initialCameraPosition: _kGooglePlex,
@@ -546,10 +646,12 @@ class _ProductDetailsState extends State<ProductDetails> {
 //                        return HomeCard();
 //                      },
 //                    ),
-                    Padding(padding: EdgeInsets.only(top: MediaQuery
-                        .of(context)
-                        .padding
-                        .top)),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery
+                                .of(context)
+                                .padding
+                                .top)),
                   ],
                 ),
               )

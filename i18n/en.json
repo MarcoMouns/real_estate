@@ -78,5 +78,6 @@
   "wrongPassword": "Wrong password",
   "cityErrorMsg": "please choose a city",
   "cityText": "choose a city",
-  "noAds": "There is no ads"
+  "noAds": "There is no ads",
+  "noFavorite": "There is no favorites"
 }

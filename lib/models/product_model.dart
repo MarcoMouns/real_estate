@@ -20,6 +20,7 @@ class ProductModel {
   String video;
   int category;
   String date;
+  bool favored;
 
   ProductModel(
       {this.id,
@@ -32,17 +33,18 @@ class ProductModel {
       this.description,
       this.address,
       this.price,
-      this.area,
-      this.floor,
-      this.streetWidth,
-      this.numberOfRooms,
-      this.numberOfBathRooms,
-      this.numberOfLivingRooms,
-      this.latitude,
-      this.longitude,
-      this.video,
-      this.category,
-      this.date});
+    this.area,
+    this.floor,
+    this.streetWidth,
+    this.numberOfRooms,
+    this.numberOfBathRooms,
+    this.numberOfLivingRooms,
+    this.latitude,
+    this.longitude,
+    this.video,
+    this.category,
+    this.date,
+    this.favored});
 
   factory ProductModel.fromApi(Map<String, dynamic> parsedJson) {
     List<Photos> photosList = List<Photos>();
@@ -56,6 +58,7 @@ class ProductModel {
       categoryColor: int.parse(parsedJson['categoryColor']),
       facadeName: parsedJson['facadeName'],
       views: parsedJson['views'],
+      favored: parsedJson['favored'],
       productCreator: ProductCreator.fromApi(parsedJson['creatorData']),
       photosList: photosList,
       title: parsedJson['title'],

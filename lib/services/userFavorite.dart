@@ -9,13 +9,13 @@ class UserFavorite {
   final String favorProduct = "favorProduct";
   final String favoriteProducts = "favoriteProducts";
 
-  Future userFavorites({int id}) async {
+  Future userFavorite({int id}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
     var data = {'product': "$id"};
 
     try {
-      Response response = await Dio().patch(
+      Response response = await Dio().post(
         "$url$favorProduct",
         data: data,
         options: Options(
@@ -41,14 +41,14 @@ class UserFavorite {
       Response response = await Dio().get(
         "$url$favoriteProducts",
         options: Options(
-
-            ///bearer token in dio
             headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}),
       );
+
       List data = response.data;
       data.forEach((value) {
         productMiniModel.add(ProductMiniModel.fromJson(value));
       });
+      //print(response.data);
       return productMiniModel;
     } catch (e) {
       print(e);
