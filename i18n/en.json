@@ -79,5 +79,6 @@
   "cityErrorMsg": "please choose a city",
   "cityText": "choose a city",
   "noAds": "There is no ads",
-  "noFavorite": "There is no favorites"
+  "noFavorite": "There is no favorites",
+  "editProduct": "edit product"
 }

@@ -79,5 +79,6 @@
   "cityErrorMsg": "من فضلك اختر المدينه",
   "cityText": "المدينه",
   "noAds": "لا يوجد اعلانات",
-  "noFavorite": "لا يوجد مفضلة"
+  "noFavorite": "لا يوجد مفضلة",
+  "editProduct": "تعديل الاعلان"
 }

@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:realestate/I10n/AppLanguage.dart';
 import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/models/produc_mini_model.dart';
+import 'package:realestate/pages/auth/login.dart';
 import 'package:realestate/pages/product/add_product.dart';
+import 'package:realestate/pages/product/edit_product.dart';
 import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/services/getUserProduct.dart';
 import 'package:realestate/widgets/home_card.dart';
@@ -57,6 +59,7 @@ class _ProfileState extends State<Profile> {
 
   String fullName;
   String token = "";
+  String photo;
   bool isLoading = true;
 
   List<ProductMiniModel> productMiniModelList = List<ProductMiniModel>();
@@ -72,6 +75,8 @@ class _ProfileState extends State<Profile> {
     token = prefs.getString('token') ?? "";
     if (token.isNotEmpty) {
       fullName = prefs.getString('name');
+      photo = prefs.getString('photo');
+
       print(fullName);
     }
     setState(() {
@@ -117,10 +122,15 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   children: <Widget>[
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                    Image.asset(
-                      'assets/images/person.png',
-                      scale: 5,
-                    ),
+                    photo == null
+                        ? Image.asset(
+                            'assets/images/person.png',
+                            scale: 5,
+                          )
+                        : CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(photo),
+                          ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
                     Text('$fullName'),
                   ],
@@ -278,9 +288,12 @@ class _ProfileState extends State<Profile> {
         actions: <Widget>[
           InkWell(
             onTap: () =>
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) => LogoutDialog()),
+            token.isEmpty ?
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Login(),))
+                :
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => LogoutDialog()),
             child: Image.asset(
               'assets/icons/back.png',
               scale: 3.7,
@@ -293,12 +306,17 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: <Widget>[
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              photo == null ?
               Image.asset(
                 'assets/images/person.png',
                 scale: 4,
+              ) :
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage(photo),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-              Text('$fullName'),
+              Text('${fullName ?? "مستخدم جديد"}'),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -358,7 +376,7 @@ class _ProfileState extends State<Profile> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
-                              ProductDetails(productMiniModelList[index].id),
+                              EditProductScreen(productMiniModelList[index].id),
                         ));
                       },
                       child: HomeCard(

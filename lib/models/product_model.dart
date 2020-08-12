@@ -2,7 +2,10 @@ class ProductModel {
   int id;
   int categoryColor;
   String facadeName;
+  int facadeId;
   int views;
+  int cityId;
+  String cityName;
   ProductCreator productCreator;
   List<Photos> photosList;
   String title;
@@ -19,12 +22,17 @@ class ProductModel {
   double longitude;
   String video;
   int category;
+  String categoryName;
   String date;
   bool favored;
 
   ProductModel(
       {this.id,
+      this.cityId,
+      this.cityName,
+      this.facadeId,
       this.categoryColor,
+      this.categoryName,
       this.facadeName,
       this.views,
       this.productCreator,
@@ -33,9 +41,9 @@ class ProductModel {
       this.description,
       this.address,
       this.price,
-    this.area,
-    this.floor,
-    this.streetWidth,
+      this.area,
+      this.floor,
+      this.streetWidth,
     this.numberOfRooms,
     this.numberOfBathRooms,
     this.numberOfLivingRooms,
@@ -55,7 +63,11 @@ class ProductModel {
 
     return ProductModel(
       id: parsedJson['id'],
+      cityId: parsedJson['city'],
+      cityName: parsedJson['CityName'],
+      facadeId: parsedJson['facade'],
       categoryColor: int.parse(parsedJson['categoryColor']),
+      categoryName: parsedJson['categoryName'],
       facadeName: parsedJson['facadeName'],
       views: parsedJson['views'],
       favored: parsedJson['favored'],

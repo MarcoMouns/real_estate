@@ -12,13 +12,17 @@ class GetProduct {
     Response response;
     ProductModel productModel = ProductModel();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
+    String token = prefs.getString('token') ?? "";
     try {
-      response = await Dio().get(
-        "$url$product$productId/",
-        options: Options(
-            headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}),
-      );
+      token.isEmpty
+          ? response = await Dio().get(
+              "$url$product$productId/",
+            )
+          : response = await Dio().get(
+              "$url$product$productId/",
+              options: Options(headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}),
+            );
+      print(response.data);
       productModel = ProductModel.fromApi(response.data);
     } on DioError catch (e) {
       print('error in getProduct => ${e.response.data}');

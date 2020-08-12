@@ -280,7 +280,7 @@ class _HomeState extends State<Home> {
     token = prefs.getString('token') ?? "";
     if (token.isNotEmpty) {
       fullName = prefs.getString('name');
-      print(fullName);
+      print(token);
     }
     setState(() {
       isLoading = false;
@@ -830,7 +830,7 @@ class _HomeState extends State<Home> {
                       scale: 5,
                     ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                    Text('$fullName'),
+                    Text('${fullName ?? "مستخدم جديد"}'),
                   ],
                 ),
               ),

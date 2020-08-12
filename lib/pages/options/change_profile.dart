@@ -47,14 +47,15 @@ class _ChangeProfileState extends State<ChangeProfile> {
     bool isReg = false;
     Pattern pattern = r"[a-zA-Z]+(?:\s[a-zA-Z]+)?";
     isReg = RegExp(pattern).hasMatch(usernameController.text);
+    print('*****************');
+    print(_image);
+    print('*****************');
     int apiCode = _image == null
         ? await EditUser().editUser(
-            phone: phoneController.text,
             name: usernameController.text,
             password: passwordController.text,
           )
         : await EditUser().editUser(
-            phone: phoneController.text,
             name: usernameController.text,
             password: passwordController.text,
             image: _image,
@@ -235,61 +236,61 @@ class _ChangeProfileState extends State<ChangeProfile> {
                             ),
                           ),
                           Padding(padding: EdgeInsets.only(top: 10)),
-                          SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.8,
-                            child: TextField(
-                              controller: phoneController,
-                              focusNode: phoneNode,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  focusColor: Color(0xFFF3F3F3),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 25,
-                                    vertical: 15,
-                                  ),
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                      borderSide:
-                                      BorderSide(color: Color(0xFFB9B9B9))),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                      borderSide:
-                                      BorderSide(color: Color(0xFFB9B9B9))),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                      borderSide:
-                                      BorderSide(color: Colors.blue)),
-                                  hintText:
-                                  "${AppLocalizations.of(context).translate(
-                                      'phoneNumber')}"),
-                            ),
-                          ),
-                          phoneEmptyError
-                              ? Text(
-                            "${"${AppLocalizations.of(context).translate(
-                                'phoneEmptyError')}"}",
-                            style: TextStyle(color: Colors.red),
-                          )
-                              : alreadyRegistered
-                              ? Text(
-                            "${"${AppLocalizations.of(context).translate(
-                                'phoneAlreadyRegistered')}"}",
-                            style: TextStyle(color: Colors.red),
-                          )
-                              : phoneLength
-                              ? Text(
-                            "${"${AppLocalizations.of(context).translate(
-                                'phoneLengthError')}"}",
-                            style: TextStyle(color: Colors.red),
-                          )
-                              : Container(),
+//                          SizedBox(
+//                            width: MediaQuery
+//                                .of(context)
+//                                .size
+//                                .width * 0.8,
+//                            child: TextField(
+//                              controller: phoneController,
+//                              focusNode: phoneNode,
+//                              keyboardType: TextInputType.number,
+//                              decoration: InputDecoration(
+//                                  filled: true,
+//                                  focusColor: Color(0xFFF3F3F3),
+//                                  contentPadding: EdgeInsets.symmetric(
+//                                    horizontal: 25,
+//                                    vertical: 15,
+//                                  ),
+//                                  border: OutlineInputBorder(
+//                                      borderRadius:
+//                                      BorderRadius.all(Radius.circular(20)),
+//                                      borderSide:
+//                                      BorderSide(color: Color(0xFFB9B9B9))),
+//                                  enabledBorder: OutlineInputBorder(
+//                                      borderRadius:
+//                                      BorderRadius.all(Radius.circular(20)),
+//                                      borderSide:
+//                                      BorderSide(color: Color(0xFFB9B9B9))),
+//                                  focusedBorder: OutlineInputBorder(
+//                                      borderRadius:
+//                                      BorderRadius.all(Radius.circular(20)),
+//                                      borderSide:
+//                                      BorderSide(color: Colors.blue)),
+//                                  hintText:
+//                                  "${AppLocalizations.of(context).translate(
+//                                      'phoneNumber')}"),
+//                            ),
+//                          ),
+//                          phoneEmptyError
+//                              ? Text(
+//                            "${"${AppLocalizations.of(context).translate(
+//                                'phoneEmptyError')}"}",
+//                            style: TextStyle(color: Colors.red),
+//                          )
+//                              : alreadyRegistered
+//                              ? Text(
+//                            "${"${AppLocalizations.of(context).translate(
+//                                'phoneAlreadyRegistered')}"}",
+//                            style: TextStyle(color: Colors.red),
+//                          )
+//                              : phoneLength
+//                              ? Text(
+//                            "${"${AppLocalizations.of(context).translate(
+//                                'phoneLengthError')}"}",
+//                            style: TextStyle(color: Colors.red),
+//                          )
+//                              : Container(),
                         ],
                       ),
                       Padding(padding: EdgeInsets.only(top: 20)),

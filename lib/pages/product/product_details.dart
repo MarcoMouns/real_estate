@@ -10,6 +10,7 @@ import 'package:realestate/pages/auth/login.dart';
 import 'package:realestate/services/get_product.dart';
 import 'package:realestate/services/userFavorite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 
 class ProductDetails extends StatefulWidget {
   int productId;
@@ -26,17 +27,19 @@ class _ProductDetailsState extends State<ProductDetails> {
   int _current = 0;
   ProductModel productModel;
   bool isLoading = true;
+  VideoPlayerController _videoPlayerController;
 
   Completer<GoogleMapController> _controller = Completer();
   final Set<Marker> _markers = {};
 
   CameraPosition _kGooglePlex;
 
-  static List<T> map<T>(List list, Function handler) {
+  static List<T> map<T>({List list, VideoPlayerController videoPlayerController, Function handler, Function videoHandler}) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
     }
+    if (videoPlayerController != null) result.add(videoHandler());
 
     return result;
   }
@@ -48,6 +51,16 @@ class _ProductDetailsState extends State<ProductDetails> {
   getProductDetails() async {
     productModel = await GetProduct().getProduct(widget.productId);
     List<String> photos = List<String>();
+    print(productModel.photosList);
+    if (productModel.video.isNotEmpty && productModel.video != null) {
+      _videoPlayerController =
+      VideoPlayerController.network('${productModel.video}')
+        ..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          if (mounted) setState(() {});
+        });
+      _videoPlayerController.setLooping(true);
+    }
     productModel.photosList.forEach((element) {
       photos.add(element.photo);
     });
@@ -82,8 +95,9 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   photoSlider() {
     child = map<Widget>(
-      imgList,
-          (index, i) {
+      list: imgList,
+      videoPlayerController: _videoPlayerController,
+      handler: (index, i) {
         return Container(
           margin: EdgeInsets.all(5.0),
           child: ClipRRect(
@@ -91,6 +105,9 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: Image.network(i, fit: BoxFit.cover, width: 1000.0),
           ),
         );
+      },
+      videoHandler: () {
+        return VideoPlayer(_videoPlayerController);
       },
     ).toList();
   }
@@ -103,6 +120,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    if (_videoPlayerController != null)
+      _videoPlayerController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return isLoading
         ? Center(
@@ -110,7 +134,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     )
         : Scaffold(
       appBar: AppBar(
-        title: Text('category name'),
+        title: Text('${productModel.title}'),
         centerTitle: true,
         actions: <Widget>[
           Padding(
@@ -150,25 +174,77 @@ class _ProductDetailsState extends State<ProductDetails> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              CarouselSlider(
-                items: child,
-                options: CarouselOptions(
-                  autoPlay: false,
-                  enlargeCenterPage: true,
-                  aspectRatio: 2.0,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                      print('in the slider $_current');
-                    });
-                  },
-                ),
+              Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  CarouselSlider(
+                    items: child,
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      enlargeCenterPage: true,
+                      aspectRatio: 2.0,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _current = index;
+                          print('in the slider $_current');
+                        });
+                      },
+                    ),
+                  ),
+                  _current == imgList.length ?
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Stack(
+                      children: <Widget>[
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 50),
+                          reverseDuration: Duration(milliseconds: 200),
+                          child: _videoPlayerController.value.isPlaying
+                              ? SizedBox.shrink()
+                              : Container(
+                            color: Colors.black26,
+                            child: Center(
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                                size: 100.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _videoPlayerController.value.isPlaying
+                                ? _videoPlayerController.pause()
+                                : _videoPlayerController.play();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ) : Container(),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: map<Widget>(
-                  imgList,
-                      (index, url) {
+                  list: imgList,
+                  videoPlayerController: _videoPlayerController,
+                  videoHandler: () {
+                    return Container(
+                      width: 8.0,
+                      height: 8.0,
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 5.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _current == imgList.length
+                              ? Color(0xFF0D986A)
+                              : Color(0xFFD8D8D8)),
+                    );
+                  },
+                  handler: (index, url) {
                     return Container(
                       width: 8.0,
                       height: 8.0,
@@ -259,8 +335,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 EdgeInsets.symmetric(horizontal: 5),
                               ),
                               Text(
-                                  '${AppLocalizations.of(context).translate(
-                                      'area')}')
+                                  '${AppLocalizations.of(context).translate('area')}')
                             ],
                           ),
                           Text("${productModel.area} متر ")
@@ -286,8 +361,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   EdgeInsets.symmetric(horizontal: 5),
                                 ),
                                 Text(
-                                    '${AppLocalizations.of(context).translate(
-                                        'front')}')
+                                    '${AppLocalizations.of(context).translate('front')}')
                               ],
                             ),
                             Text("${productModel.facadeName}"),
@@ -316,8 +390,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 EdgeInsets.symmetric(horizontal: 5),
                               ),
                               Text(
-                                  '${AppLocalizations.of(context).translate(
-                                      'bedroomNumber')}')
+                                  '${AppLocalizations.of(context).translate('bedroomNumber')}')
                             ],
                           ),
                           Text("${productModel.numberOfRooms}")
@@ -343,8 +416,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   EdgeInsets.symmetric(horizontal: 5),
                                 ),
                                 Text(
-                                    '${AppLocalizations.of(context).translate(
-                                        'bathroomNumber')}')
+                                    '${AppLocalizations.of(context).translate('bathroomNumber')}')
                               ],
                             ),
                             Text("${productModel.numberOfBathRooms}"),
@@ -373,8 +445,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 EdgeInsets.symmetric(horizontal: 5),
                               ),
                               Text(
-                                  '${AppLocalizations.of(context).translate(
-                                      'lounges')}')
+                                  '${AppLocalizations.of(context).translate('lounges')}')
                             ],
                           ),
                           Text("${productModel.numberOfLivingRooms}")
@@ -400,8 +471,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   EdgeInsets.symmetric(horizontal: 5),
                                 ),
                                 Text(
-                                    '${AppLocalizations.of(context).translate(
-                                        'streetWidth')}')
+                                    '${AppLocalizations.of(context).translate('streetWidth')}')
                               ],
                             ),
                             Text("${productModel.streetWidth} م "),
@@ -430,8 +500,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 EdgeInsets.symmetric(horizontal: 5),
                               ),
                               Text(
-                                  '${AppLocalizations.of(context).translate(
-                                      'floorNumber')}')
+                                  '${AppLocalizations.of(context).translate('floorNumber')}')
                             ],
                           ),
                           Text("${productModel.floor}")
@@ -457,8 +526,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   EdgeInsets.symmetric(horizontal: 5),
                                 ),
                                 Text(
-                                    '${AppLocalizations.of(context).translate(
-                                        'adNumber')}')
+                                    '${AppLocalizations.of(context).translate('adNumber')}')
                               ],
                             ),
                             Text("${productModel.id}"),
@@ -487,8 +555,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 EdgeInsets.symmetric(horizontal: 5),
                               ),
                               Text(
-                                  '${AppLocalizations.of(context).translate(
-                                      'views')}')
+                                  '${AppLocalizations.of(context).translate('views')}')
                             ],
                           ),
                           Text("${productModel.views}")
@@ -499,8 +566,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${AppLocalizations.of(context).translate(
-                            'DescriptionOfTheProperty')}",
+                        "${AppLocalizations.of(context).translate('DescriptionOfTheProperty')}",
                         style: TextStyle(color: Color(0xFF0D986A)),
                       ),
                     ),
@@ -531,8 +597,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 8),
                                       child: Text(
-                                          "${productModel.productCreator
-                                              .name}"),
+                                          "${productModel.productCreator.name}"),
                                     ),
                                     Padding(
                                         padding: EdgeInsets.only(top: 5)),
@@ -560,9 +625,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                       .symmetric(
                                                       horizontal: 5)),
                                               Text(
-                                                  "${AppLocalizations.of(
-                                                      context).translate(
-                                                      'call')}"),
+                                                  "${AppLocalizations.of(context).translate('call')}"),
                                             ],
                                           ),
                                         ),
@@ -588,9 +651,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                       .symmetric(
                                                       horizontal: 5)),
                                               Text(
-                                                  "${AppLocalizations.of(
-                                                      context).translate(
-                                                      'chat')}"),
+                                                  "${AppLocalizations.of(context).translate('chat')}"),
                                             ],
                                           ),
                                         ),

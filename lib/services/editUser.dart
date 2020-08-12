@@ -8,24 +8,24 @@ class EditUser {
   final String _edit = "user/";
   FormData _formData;
 
-  Future editUser(
-      {String name, String phone, String password, File image}) async {
+  Future editUser({String name, String password, File image}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
     print(password);
+
     image == null && password.isEmpty
-        ? _formData = FormData.fromMap({"name": "$name", "mobile": "$phone"})
-        : password.isEmpty
-            ? _formData = FormData.fromMap({
-                "name": "$name",
-                "mobile": "$phone",
-                "photo": await MultipartFile.fromFile("${image.path}"),
-              })
-            : _formData = FormData.fromMap({
+        ? _formData = FormData.fromMap({"name": "$name"})
+        : image == null && password.isNotEmpty
+            ? _formData = FormData.fromMap({"name": "$name", "password": "$password"})
+            : password.isEmpty
+                ? _formData = FormData.fromMap({
+                    "name": "$name",
+                    "photo": await MultipartFile.fromFile("${image.path}"),
+                  })
+                : _formData = FormData.fromMap({
                 "name": "$name",
                 "password": "$password",
                 "photo": await MultipartFile.fromFile("${image.path}"),
-                "mobile": "$phone"
               });
     try {
       Response response = await Dio().patch("$_url$_edit",
