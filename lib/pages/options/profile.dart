@@ -7,7 +7,6 @@ import 'package:realestate/models/produc_mini_model.dart';
 import 'package:realestate/pages/auth/login.dart';
 import 'package:realestate/pages/product/add_product.dart';
 import 'package:realestate/pages/product/edit_product.dart';
-import 'package:realestate/pages/product/product_details.dart';
 import 'package:realestate/services/getUserProduct.dart';
 import 'package:realestate/widgets/home_card.dart';
 import 'package:realestate/widgets/logout_dialog.dart';
@@ -208,32 +207,17 @@ class _ProfileState extends State<Profile> {
             ),
             ListTile(
               title:
-                  Text("${AppLocalizations.of(context).translate('aboutApp')}"),
-              leading: Image.asset(
-                'assets/icons/aboutApp.png',
-                scale: 3.5,
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.65,
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
-            ListTile(
-              title:
               Text("${AppLocalizations.of(context).translate('callUs')}"),
               leading: Image.asset(
                 'assets/icons/phoneHolder.png',
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CallUs(),
-                ));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CallUs(),
+                  ),
+                );
               },
             ),
             SizedBox(

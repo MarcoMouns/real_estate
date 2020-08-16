@@ -17,6 +17,7 @@ class LoginService {
         prefs.setString('name', "${response.data['name']}");
         prefs.setString('mobile', "${response.data['mobile']}");
         prefs.setString('photo', "${response.data['photo']}");
+        prefs.setInt('id', response.data['id']);
         print(response.data);
         return response.statusCode;
       }

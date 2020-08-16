@@ -40,6 +40,9 @@ dependencies:
   geolocator: ^5.3.2+2
   video_player: ^0.10.11+2
   google_maps_place_picker: ^0.9.4
+  url_launcher: ^5.5.0
+  bubble: ^1.1.9+1
+  flutter_socket_io: ^0.6.0
 
 
 

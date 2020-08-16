@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realestate/I10n/app_localizations.dart';
+import 'package:realestate/chat/List_of_chats.dart';
 import 'package:realestate/models/categories.dart';
 import 'package:realestate/models/cities.dart';
 import 'package:realestate/models/map_products.dart';
@@ -120,6 +121,7 @@ class _HomeState extends State<Home> {
       endPrice: endPrice,
       fromTwoWeeksAgo: fromTwoWeeksAgo,
     );
+    print(productMiniModelList.length);
     isThereNextPage = GetMiniProduct.isThereNextPagebool;
     position = await getCurrentLocation();
     _kGooglePlex = CameraPosition(
@@ -143,7 +145,6 @@ class _HomeState extends State<Home> {
       double startPrice,
       double endPrice,
       bool fromTwoWeeksAgo}) async {
-    print('hi from get');
     List<ProductMiniModel> productMiniModelListNew = List<ProductMiniModel>();
     if (isThereNextPage == true) {
       apiPage++;
@@ -760,14 +761,12 @@ class _HomeState extends State<Home> {
                     getMiniProducts(
                       search: searchController.text,
                       categoryID: categoryId,
-                      numberOfRooms: bedDropdownValue == null ? 0 : int.parse(
-                          bedDropdownValue),
-                      numberOfBaths: bathDropdownValue == null ? 0 : int.parse(
-                          bathDropdownValue),
+                      numberOfRooms: bedDropdownValue == null ? 0 : int.parse(bedDropdownValue),
+                      numberOfBaths: bathDropdownValue == null ? 0 : int.parse(bathDropdownValue),
                       startPrice: selectedRange.start,
                       endPrice: selectedRange.end,
-                      lat: position.latitude == null ? 0 : position.latitude,
-                      long: position.longitude == null ? 0 : position.longitude,
+                      lat: position == null ? 0 : position.latitude,
+                      long: position == null ? 0 : position.longitude,
                       fromTwoWeeksAgo: fromTwoWeeksAgoBool,
                     );
                     setState(() {});
@@ -894,31 +893,34 @@ class _HomeState extends State<Home> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListOfChatsClass(true),));
               },
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.65,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.65,
               child: Divider(
                 thickness: 1,
               ),
             ),
-            ListTile(
-              title: Text("${AppLocalizations.of(context).translate('aboutApp')}"),
-              leading: Image.asset(
-                'assets/icons/aboutApp.png',
-                scale: 3.5,
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.65,
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
+//            ListTile(
+//              title: Text("${AppLocalizations.of(context).translate('aboutApp')}"),
+//              leading: Image.asset(
+//                'assets/icons/aboutApp.png',
+//                scale: 3.5,
+//              ),
+//              onTap: () {
+//                Navigator.of(context).pop();
+//              },
+//            ),
+//            SizedBox(
+//              width: MediaQuery.of(context).size.width * 0.65,
+//              child: Divider(
+//                thickness: 1,
+//              ),
+//            ),
             ListTile(
               title: Text("${AppLocalizations.of(context).translate('callUs')}"),
               leading: Image.asset(

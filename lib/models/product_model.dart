@@ -107,17 +107,16 @@ class Photos {
 }
 
 class ProductCreator {
+  int id;
   String name;
   String mobile;
   String photo;
 
-  ProductCreator({this.name, this.mobile, this.photo});
+  ProductCreator({this.name, this.mobile, this.photo, this.id});
 
   factory ProductCreator.fromApi(Map<String, dynamic> parsedJson) {
-    return ProductCreator(
-      name: parsedJson['name'],
-      photo: parsedJson['photo'],
-      mobile: parsedJson['mobile'],
+    return ProductCreator(name: parsedJson['name'], photo: parsedJson['photo'], mobile: parsedJson['mobile'],
+        id: parsedJson['id']
     );
   }
 }
