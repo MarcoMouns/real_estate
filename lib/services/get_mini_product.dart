@@ -67,6 +67,7 @@ class GetMiniProduct {
     try {
       String city = "city=$cityId";
       response = await Dio().get("$url$product$city");
+      print(response.data);
       List data = response.data;
       data.forEach((element) {
         mapProductsModelList.add(MapProductsModel.fromApi(element));

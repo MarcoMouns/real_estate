@@ -36,7 +36,7 @@ dependencies:
   google_maps_flutter: ^0.5.28+1
   carousel_slider: ^2.1.0
   dio: ^3.0.9
-  image_picker: ^0.6.7+4
+  image_picker: ^0.6.7+7
   geolocator: ^5.3.2+2
   video_player: ^0.10.11+2
   google_maps_place_picker: ^0.9.4

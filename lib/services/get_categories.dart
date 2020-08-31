@@ -10,6 +10,9 @@ class GetCategories {
     Response response;
     try {
       response = await Dio().get('$url$categories');
+      print('*******************');
+      print(response.data);
+      print('*******************');
       List data = response.data;
       data.forEach((element) {
         categoriesModel.add(CategoriesModel.fromJson(element));

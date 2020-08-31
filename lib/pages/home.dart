@@ -121,6 +121,8 @@ class _HomeState extends State<Home> {
       endPrice: endPrice,
       fromTwoWeeksAgo: fromTwoWeeksAgo,
     );
+    isLoading = false;
+    setState(() {});
     print(productMiniModelList.length);
     isThereNextPage = GetMiniProduct.isThereNextPagebool;
     position = await getCurrentLocation();
@@ -131,8 +133,6 @@ class _HomeState extends State<Home> {
     await initCitiesMarkers();
     await initProductMarkers();
     print('**************************** $isThereNextPage');
-    isLoading = false;
-    setState(() {});
   }
 
   getMoreMiniProducts(
@@ -436,7 +436,7 @@ class _HomeState extends State<Home> {
                       ),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
-                        height: 30,
+                        height: 50,
                         width: MediaQuery
                             .of(context)
                             .size
@@ -447,15 +447,22 @@ class _HomeState extends State<Home> {
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           itemBuilder: (context, index) {
                             return InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                isLoading = true;
+                                setState(() {});
                                 apiPage = 1;
                                 categoryId = categoriesModel[index].id;
-                                getMiniProducts(search: searchController.text,
+                                await getMiniProducts(search: searchController.text,
                                     categoryID: categoriesModel[index].id);
+                                isLoading = false;
+                                setState(() {});
                               },
-                              child: Padding(
+                              child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
+                                height: 50,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Container(
                                       width: 20,
