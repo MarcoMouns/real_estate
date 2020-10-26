@@ -86,7 +86,7 @@ class _HomeCardState extends State<HomeCard> {
                   Row(
                     children: <Widget>[
                       Text("${widget.numberOfRooms}"),
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
                       Image.asset(
                         'assets/icons/bed.png',
                         scale: 3.3,
