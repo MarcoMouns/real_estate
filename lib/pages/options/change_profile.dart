@@ -112,7 +112,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPhoto();
   }

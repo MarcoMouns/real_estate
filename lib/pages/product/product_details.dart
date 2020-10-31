@@ -142,7 +142,6 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkToken();
     getProductDetails();

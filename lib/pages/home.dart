@@ -125,9 +125,12 @@ class _HomeState extends State<Home> {
     setState(() {});
     print(productMiniModelList.length);
     isThereNextPage = GetMiniProduct.isThereNextPagebool;
-    position = await getCurrentLocation();
+    try {
+      position = await getCurrentLocation();
+    } catch (e) {}
     _kGooglePlex = CameraPosition(
-      target: LatLng(position.latitude, position.longitude),
+      target: LatLng(position == null ? 0.0 : position.latitude,
+          position == null ? 0.0 : position.longitude),
       zoom: 14.4746,
     );
     await initCitiesMarkers();
@@ -210,26 +213,26 @@ class _HomeState extends State<Home> {
     citiesModelList.forEach((element) async {
       GoogleMapController controller = await _controller.future;
       Uint8List markerIcon =
-      await getBytesFromCanvas(200, 100, "${element.name}");
-      _citiesMarkers.add(Marker(
-        markerId: MarkerId('${element.id}'),
-        position: LatLng(element.lat, element.long),
-        icon: BitmapDescriptor.fromBytes(markerIcon),
-        onTap: () {
-          isZoomControlsEnabled = true;
-          isZoomGesturesEnabled = true;
-          showCitiesOnMap = false;
-          print(isZoomControlsEnabled);
-          print(isZoomGesturesEnabled);
-          print(showCitiesOnMap);
-          _kCity = CameraPosition(
-              target: LatLng(element.lat, element.long),
-              zoom: 14.0);
-          controller.animateCamera(CameraUpdate.newCameraPosition(_kCity));
-          setState(() {});
-        },
-        infoWindow: InfoWindow(title: '${element.name}'),
-      ),
+          await getBytesFromCanvas(200, 100, "${element.name}");
+      _citiesMarkers.add(
+        Marker(
+          markerId: MarkerId('${element.id}'),
+          position: LatLng(element.lat, element.long),
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          onTap: () {
+            isZoomControlsEnabled = true;
+            isZoomGesturesEnabled = true;
+            showCitiesOnMap = false;
+            print(isZoomControlsEnabled);
+            print(isZoomGesturesEnabled);
+            print(showCitiesOnMap);
+            _kCity = CameraPosition(
+                target: LatLng(element.lat, element.long), zoom: 14.0);
+            controller.animateCamera(CameraUpdate.newCameraPosition(_kCity));
+            setState(() {});
+          },
+          infoWindow: InfoWindow(title: '${element.name}'),
+        ),
       );
     });
   }
@@ -237,15 +240,14 @@ class _HomeState extends State<Home> {
   initProductMarkers() async {
     mapProductsModelList.forEach((element) async {
       Uint8List markerIcon =
-      await getBytesFromCanvas(200, 100, "${element.price}");
+          await getBytesFromCanvas(200, 100, "${element.price}");
       _productMarkers.add(Marker(
           markerId: MarkerId('${element.id}'),
           position: LatLng(element.lat, element.long),
           icon: BitmapDescriptor.fromBytes(markerIcon),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  ProductDetails(element.id),
+              builder: (context) => ProductDetails(element.id),
             ));
           },
           infoWindow: InfoWindow(title: '${element.price}')));
@@ -334,7 +336,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-
   @override
   void dispose() {
     super.dispose();
@@ -357,10 +358,7 @@ class _HomeState extends State<Home> {
                   bottomRight: Radius.circular(25),
                 ),
                 child: Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                   alignment: Alignment.topCenter,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -372,10 +370,7 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: <Widget>[
                       SizedBox(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.8,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: TextField(
                           controller: searchController,
                           focusNode: searchNode,
@@ -388,14 +383,17 @@ class _HomeState extends State<Home> {
                               suffixIcon: searchController.text.isEmpty
                                   ? null
                                   : InkWell(
-                                onTap: () {
-                                  searchController.clear();
-                                  getMiniProducts();
-                                  unFocus();
-                                  setState(() {});
-                                },
-                                child: Icon(Icons.clear, color: Colors.red,),
-                              ),
+                                      onTap: () {
+                                        searchController.clear();
+                                        getMiniProducts();
+                                        unFocus();
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.clear,
+                                        color: Colors.red,
+                                      ),
+                                    ),
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 0.0,
                                 vertical: 0.0,
@@ -414,33 +412,30 @@ class _HomeState extends State<Home> {
                               filled: true,
                               fillColor: Color(0xFFF2F3F5),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(20)),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFF2F3F5)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                borderSide:
+                                    BorderSide(color: Color(0xFFF2F3F5)),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(20)),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFF2F3F5)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                borderSide:
+                                    BorderSide(color: Color(0xFFF2F3F5)),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(20)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
                                 borderSide: BorderSide(color: Colors.cyan),
                               ),
-                              hintText: "${AppLocalizations.of(context)
-                                  .translate('search')}"),
+                              hintText:
+                                  "${AppLocalizations.of(context).translate('search')}"),
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(top: 20)),
                       SizedBox(
                         height: 50,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.95,
+                        width: MediaQuery.of(context).size.width * 0.95,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: categoriesModel.length,
@@ -452,7 +447,8 @@ class _HomeState extends State<Home> {
                                 setState(() {});
                                 apiPage = 1;
                                 categoryId = categoriesModel[index].id;
-                                await getMiniProducts(search: searchController.text,
+                                await getMiniProducts(
+                                    search: searchController.text,
                                     categoryID: categoriesModel[index].id);
                                 isLoading = false;
                                 setState(() {});
@@ -470,8 +466,8 @@ class _HomeState extends State<Home> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20)),
-                                        color: Color(
-                                            categoriesModel[index].color),
+                                        color:
+                                            Color(categoriesModel[index].color),
                                       ),
                                     ),
                                     Text('${categoriesModel[index].name}')
@@ -486,49 +482,56 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              isLoading ? Center(child: CircularProgressIndicator(),) :
-              ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: productMiniModelList.length,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: InkWell(
-                      onTap: () {
-                        PostViews().postViews(productMiniModelList[index].id);
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetails(productMiniModelList[index].id),
-                        ));
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: productMiniModelList.length,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          child: InkWell(
+                            onTap: () {
+                              PostViews()
+                                  .postViews(productMiniModelList[index].id);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProductDetails(
+                                    productMiniModelList[index].id),
+                              ));
+                            },
+                            child: HomeCard(
+                              id: productMiniModelList[index].id,
+                              title: productMiniModelList[index].title,
+                              price: productMiniModelList[index].price,
+                              size: productMiniModelList[index].size,
+                              time: productMiniModelList[index].time,
+                              numberOfRooms:
+                                  productMiniModelList[index].numberOfRooms,
+                              numberOfBathRooms:
+                                  productMiniModelList[index].numberOfBathRooms,
+                              address: productMiniModelList[index].address,
+                              photo: productMiniModelList[index].photo,
+                              categoryColor:
+                                  productMiniModelList[index].categoryColor,
+                            ),
+                          ),
+                        );
                       },
-                      child: HomeCard(
-                        id: productMiniModelList[index].id,
-                        title: productMiniModelList[index].title,
-                        price: productMiniModelList[index].price,
-                        size: productMiniModelList[index].size,
-                        time: productMiniModelList[index].time,
-                        numberOfRooms: productMiniModelList[index]
-                            .numberOfRooms,
-                        numberOfBathRooms: productMiniModelList[index]
-                            .numberOfBathRooms,
-                        address: productMiniModelList[index].address,
-                        photo: productMiniModelList[index].photo,
-                        categoryColor: productMiniModelList[index]
-                            .categoryColor,
-                      ),
                     ),
-                  );
-                },
-              ),
-              isLoadingNewData ?
-              Center(child: CircularProgressIndicator(),) : Container()
+              isLoadingNewData
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container()
             ],
           ),
-        )
-    );
+        ));
   }
 
   ///*****************Filter Dialog***************
@@ -547,10 +550,7 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     SizedBox(
                       height: 35,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.65,
+                      width: MediaQuery.of(context).size.width * 0.65,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: categoriesModel.length,
@@ -577,12 +577,13 @@ class _HomeState extends State<Home> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         },
                       ),
                     ),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                    ),
                     InkWell(
                       onTap: () async {
                         position = await getCurrentLocation();
@@ -590,52 +591,63 @@ class _HomeState extends State<Home> {
                         print(position);
                       },
                       child: Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.65,
+                        width: MediaQuery.of(context).size.width * 0.65,
                         padding: EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
-                          border: Border.all(
-                              color: Color(0xFFCCCCCC), width: 2),
-                          color: position == null ? Colors.transparent : Colors
-                              .blue,
+                          border:
+                              Border.all(color: Color(0xFFCCCCCC), width: 2),
+                          color: position == null
+                              ? Colors.transparent
+                              : Colors.blue,
                         ),
                         alignment: Alignment.center,
                         child: Row(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5),),
-                            Image.asset('assets/icons/pin.png', scale: 4,
-                              color: Color(0xFFF99743),),
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                            ),
+                            Image.asset(
+                              'assets/icons/pin.png',
+                              scale: 4,
+                              color: Color(0xFFF99743),
+                            ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5),),
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                            ),
                             Text(
-                              "${AppLocalizations.of(context).translate(
-                                  'currentLocation')}",
-                              style: TextStyle(fontSize: 18),)
+                              "${AppLocalizations.of(context).translate('currentLocation')}",
+                              style: TextStyle(fontSize: 18),
+                            )
                           ],
                         ),
                       ),
                     ),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/bed.png', scale: 4,
-                              color: Color(0xFFF99743),),
+                            Image.asset(
+                              'assets/icons/bed.png',
+                              scale: 4,
+                              color: Color(0xFFF99743),
+                            ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5),),
-                            Text("${AppLocalizations.of(context).translate('bedroomNumber')}"),
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                            ),
+                            Text(
+                                "${AppLocalizations.of(context).translate('bedroomNumber')}"),
                           ],
                         ),
                         Container(
                           width: 60,
                           height: 30,
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                             border: Border.all(color: Color(0xFFCCCCCC)),
@@ -645,10 +657,15 @@ class _HomeState extends State<Home> {
                             isExpanded: true,
                             value: bedDropdownValue,
                             hint: Text('0'),
-                            icon: Image.asset('assets/icons/downArrow.png', scale: 5,),
+                            icon: Image.asset(
+                              'assets/icons/downArrow.png',
+                              scale: 5,
+                            ),
                             iconSize: 24,
                             underline: SizedBox(),
-                            style: TextStyle(color: Colors.deepPurple,),
+                            style: TextStyle(
+                              color: Colors.deepPurple,
+                            ),
                             onChanged: (String newValue) {
                               setState(() {
                                 bedDropdownValue = newValue;
@@ -660,30 +677,41 @@ class _HomeState extends State<Home> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
-                                  value, textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15),),
+                                  value,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15),
+                                ),
                               );
                             }).toList(),
                           ),
                         ),
-
                       ],
                     ),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/bath.png', scale: 4, color: Color(0xFFF99743),),
-                            Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
-                            Text("${AppLocalizations.of(context).translate('bathroomNumber')}"),
+                            Image.asset(
+                              'assets/icons/bath.png',
+                              scale: 4,
+                              color: Color(0xFFF99743),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                            ),
+                            Text(
+                                "${AppLocalizations.of(context).translate('bathroomNumber')}"),
                           ],
                         ),
                         Container(
                           width: 60,
                           height: 30,
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                             border: Border.all(color: Color(0xFFCCCCCC)),
@@ -693,10 +721,15 @@ class _HomeState extends State<Home> {
                             isExpanded: true,
                             value: bathDropdownValue,
                             hint: Text('0'),
-                            icon: Image.asset('assets/icons/downArrow.png', scale: 5,),
+                            icon: Image.asset(
+                              'assets/icons/downArrow.png',
+                              scale: 5,
+                            ),
                             iconSize: 24,
                             underline: SizedBox(),
-                            style: TextStyle(color: Colors.deepPurple,),
+                            style: TextStyle(
+                              color: Colors.deepPurple,
+                            ),
                             onChanged: (String newValue) {
                               setState(() {
                                 bathDropdownValue = newValue;
@@ -708,21 +741,31 @@ class _HomeState extends State<Home> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
-                                  value, textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15),),
+                                  value,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15),
+                                ),
                               );
                             }).toList(),
                           ),
                         ),
-
                       ],
                     ),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 5),),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                    ),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.monetization_on, color: Colors.orange, size: 20,),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 5),),
-                        Text("${AppLocalizations.of(context).translate('price')}")
+                        Icon(
+                          Icons.monetization_on,
+                          color: Colors.orange,
+                          size: 20,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                        ),
+                        Text(
+                            "${AppLocalizations.of(context).translate('price')}")
                       ],
                     ),
                     RangeSlider(
@@ -730,7 +773,8 @@ class _HomeState extends State<Home> {
                       divisions: 1000,
                       min: 0,
                       max: 1000000,
-                      labels: RangeLabels('${selectedRange.start}', '${selectedRange.end}'),
+                      labels: RangeLabels(
+                          '${selectedRange.start}', '${selectedRange.end}'),
                       onChanged: (RangeValues newRange) {
                         setState(() {
                           selectedRange = newRange;
@@ -768,8 +812,12 @@ class _HomeState extends State<Home> {
                     getMiniProducts(
                       search: searchController.text,
                       categoryID: categoryId,
-                      numberOfRooms: bedDropdownValue == null ? 0 : int.parse(bedDropdownValue),
-                      numberOfBaths: bathDropdownValue == null ? 0 : int.parse(bathDropdownValue),
+                      numberOfRooms: bedDropdownValue == null
+                          ? 0
+                          : int.parse(bedDropdownValue),
+                      numberOfBaths: bathDropdownValue == null
+                          ? 0
+                          : int.parse(bathDropdownValue),
                       startPrice: selectedRange.start,
                       endPrice: selectedRange.end,
                       lat: position == null ? 0 : position.latitude,
@@ -800,14 +848,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: _drawerKey,
       drawer: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width * 0.8,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(40),
@@ -878,7 +920,8 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('mamlakaArea')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('mamlakaArea')}"),
               leading: Image.asset(
                 'assets/icons/country.png',
                 scale: 3.5,
@@ -900,14 +943,13 @@ class _HomeState extends State<Home> {
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListOfChatsClass(true),));
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ListOfChatsClass(true),
+                ));
               },
             ),
             SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.65,
+              width: MediaQuery.of(context).size.width * 0.65,
               child: Divider(
                 thickness: 1,
               ),
@@ -929,7 +971,8 @@ class _HomeState extends State<Home> {
 //              ),
 //            ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('callUs')}"),
+              title:
+                  Text("${AppLocalizations.of(context).translate('callUs')}"),
               leading: Image.asset(
                 'assets/icons/phoneHolder.png',
                 scale: 3.5,
@@ -947,7 +990,8 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('favorites')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('favorites')}"),
               leading: Image.asset(
                 'assets/icons/roundStar.png',
                 scale: 1.7,
@@ -965,15 +1009,16 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
-              title: Text("${AppLocalizations.of(context).translate('setting')}"),
+              title:
+                  Text("${AppLocalizations.of(context).translate('setting')}"),
               leading: Image.asset(
                 'assets/icons/star.png',
                 scale: 3.5,
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Profile(),)
-                );
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Profile(),
+                ));
               },
             ),
           ],
@@ -1001,10 +1046,9 @@ class _HomeState extends State<Home> {
             ),
           ),
           InkWell(
-            onTap: () =>
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Notifications(),)
-                ),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Notifications(),
+            )),
             child: Image.asset(
               'assets/icons/bell.png',
               scale: 3.7,
@@ -1044,8 +1088,7 @@ class _HomeState extends State<Home> {
                       isZoomGesturesEnabled = false;
                       showCitiesOnMap = true;
                       setState(() {});
-                    }
-                    else if (position.zoom == 14) {
+                    } else if (position.zoom == 14) {
                       isZoomControlsEnabled = true;
                       isZoomGesturesEnabled = true;
                       showCitiesOnMap = false;
@@ -1116,7 +1159,9 @@ class _HomeState extends State<Home> {
                                 Icons.dehaze,
                                 color: _isVisible == true && currentPage == 0
                                     ? Colors.white
-                                    : _isVisible == true && currentPage != 0 ? Color(0xFF6C6C6C) : Color(0xFF6C6C6C),
+                                    : _isVisible == true && currentPage != 0
+                                        ? Color(0xFF6C6C6C)
+                                        : Color(0xFF6C6C6C),
                               ),
                             ),
                           ),
@@ -1138,10 +1183,13 @@ class _HomeState extends State<Home> {
                               width: 65,
                               height: 46,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(27)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(27)),
                                 color: _isVisible == true && currentPage == 1
                                     ? Color(0xFFF99743)
-                                    : _isVisible == true && currentPage != 1 ? Colors.transparent : Colors.transparent,
+                                    : _isVisible == true && currentPage != 1
+                                        ? Colors.transparent
+                                        : Colors.transparent,
                               ),
                               alignment: Alignment.center,
                               child: Image.asset(
@@ -1149,7 +1197,9 @@ class _HomeState extends State<Home> {
                                 scale: 3,
                                 color: _isVisible == true && currentPage == 1
                                     ? Colors.white
-                                    : _isVisible == true && currentPage != 1 ? Color(0xFF6C6C6C) : Color(0xFF6C6C6C),
+                                    : _isVisible == true && currentPage != 1
+                                        ? Color(0xFF6C6C6C)
+                                        : Color(0xFF6C6C6C),
                               ),
                             ),
                           ),

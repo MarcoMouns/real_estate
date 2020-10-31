@@ -63,10 +63,10 @@ class _HomeCardState extends State<HomeCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("${widget.title}"),
+                      Text("${widget.title}",softWrap: true,),
                       Row(
                         children: <Widget>[
-                          Text(("${widget.time}")),
+                          Text("${widget.time}",softWrap: true,),
                           Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
                           Container(
                             width: 20,

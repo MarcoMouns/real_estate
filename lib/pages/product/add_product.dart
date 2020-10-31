@@ -256,7 +256,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkToken();
     getData();

@@ -46,7 +46,6 @@ class _FavoritesState extends State<Favorites> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getName();
     getUserFavorite();

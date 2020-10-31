@@ -3,7 +3,6 @@ import 'package:realestate/I10n/app_localizations.dart';
 import 'package:realestate/pages/auth/registration.dart';
 
 import 'change_password.dart';
-import 'otp.dart';
 
 class PhoneCheck extends StatefulWidget {
   @override
