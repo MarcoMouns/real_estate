@@ -3,7 +3,8 @@ class ProductMiniModel {
   String title;
   double price;
   int size;
-  String time;
+  String timeAr;
+  String timeEn;
   int numberOfRooms;
   int numberOfBathRooms;
   String address;
@@ -17,7 +18,8 @@ class ProductMiniModel {
     this.title,
     this.price,
     this.size,
-    this.time,
+    this.timeAr,
+    this.timeEn,
     this.numberOfRooms,
     this.numberOfBathRooms,
     this.address,
@@ -33,7 +35,8 @@ class ProductMiniModel {
       title: parsedJson['title'] ?? 'unTitled',
       price: parsedJson['price'] ?? 0.0,
       size: parsedJson['size'] ?? 0.0,
-      time: parsedJson['time'] ?? "unKnown",
+      timeAr: parsedJson['time_ar'] ?? "unKnown",
+      timeEn: parsedJson['time_en'] ?? "unKnown",
       numberOfRooms: parsedJson['numberOfRooms'] ?? 0,
       numberOfBathRooms: parsedJson['numberOfBathRooms'] ?? 0,
       address: parsedJson['address'] ?? "unKnown",

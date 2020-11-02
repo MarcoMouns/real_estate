@@ -364,19 +364,23 @@ class _ProfileState extends State<Profile> {
                       },
                       child: HomeCard(
                         id: productMiniModelList[index].id,
-                        title: productMiniModelList[index].title,
-                        price: productMiniModelList[index].price,
-                        size: productMiniModelList[index].size,
-                        time: productMiniModelList[index].time,
-                        numberOfRooms:
-                        productMiniModelList[index].numberOfRooms,
-                        numberOfBathRooms:
-                        productMiniModelList[index].numberOfBathRooms,
-                        address: productMiniModelList[index].address,
-                        photo: productMiniModelList[index].photo,
-                        categoryColor:
-                        productMiniModelList[index].categoryColor,
-                      ),
+                              title: productMiniModelList[index].title,
+                              price: productMiniModelList[index].price,
+                              size: productMiniModelList[index].size,
+                              time: Localizations.localeOf(context)
+                                          .languageCode ==
+                                      "en"
+                                  ? productMiniModelList[index].timeEn
+                                  : productMiniModelList[index].timeAr,
+                              numberOfRooms:
+                                  productMiniModelList[index].numberOfRooms,
+                              numberOfBathRooms:
+                                  productMiniModelList[index].numberOfBathRooms,
+                              address: productMiniModelList[index].address,
+                              photo: productMiniModelList[index].photo,
+                              categoryColor:
+                                  productMiniModelList[index].categoryColor,
+                            ),
                     ),
                   );
                 },

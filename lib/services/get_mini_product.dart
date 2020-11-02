@@ -48,6 +48,7 @@ class GetMiniProduct {
       response = await Dio().get("$url$product" +
           "page=$page&size=10" +
           "$searchApi$categoryApi$numberOfRoomsApi$numberOfBathsApi$startPriceApi$fromTwoWeeksAgoApi$latApi");
+      print(response.data);
       List data = response.data['results'];
       next = response.data['next'];
       isThereNextPagebool = isThereNextPage(next);

@@ -51,7 +51,11 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   CameraPosition _kGooglePlex;
 
-  static List<T> map<T>({List list, VideoPlayerController videoPlayerController, Function handler, Function videoHandler}) {
+  static List<T> map<T>(
+      {List list,
+      VideoPlayerController videoPlayerController,
+      Function handler,
+      Function videoHandler}) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
@@ -70,7 +74,8 @@ class _ProductDetailsState extends State<ProductDetails> {
     List<String> photos = List<String>();
     print(productModel.photosList);
     if (productModel.video.isNotEmpty && productModel.video != null) {
-      _videoPlayerController = VideoPlayerController.network('${productModel.video}')
+      _videoPlayerController =
+      VideoPlayerController.network('${productModel.video}')
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           if (mounted) setState(() {});
@@ -94,7 +99,8 @@ class _ProductDetailsState extends State<ProductDetails> {
         // title is the address
         title: "${productModel.title}",
         // snippet are the coordinates of the position
-        snippet: 'Lat: ${productModel.latitude}, Lng: ${productModel.longitude}',
+        snippet:
+        'Lat: ${productModel.latitude}, Lng: ${productModel.longitude}',
       ),
       icon: BitmapDescriptor.defaultMarker,
     ));
@@ -136,9 +142,9 @@ class _ProductDetailsState extends State<ProductDetails> {
   }
 
   getRelevantProduct() async {
-    productMiniModelList = await GetRelevantProducts().getRelevantProducts(productModel.category, productModel.id);
+    productMiniModelList = await GetRelevantProducts()
+        .getRelevantProducts(productModel.category, productModel.id);
   }
-
 
   @override
   void initState() {
@@ -170,7 +176,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: GestureDetector(
               onTap: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
+                SharedPreferences prefs =
+                await SharedPreferences.getInstance();
                 try {
                   if (prefs.getString('token') != null) {
                     await favorite(widget.productId);
@@ -178,7 +185,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       productModel.favored = !productModel.favored;
                     });
                   } else {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Login()));
                   }
                 } catch (e) {
                   print("error in like");
@@ -226,8 +234,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                       children: <Widget>[
                         AnimatedSwitcher(
                           duration: Duration(milliseconds: 50),
-                          reverseDuration: Duration(milliseconds: 200),
-                          child: _videoPlayerController.value.isPlaying
+                          reverseDuration:
+                          Duration(milliseconds: 200),
+                          child:
+                          _videoPlayerController.value.isPlaying
                               ? SizedBox.shrink()
                               : Container(
                             color: Colors.black26,
@@ -242,7 +252,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _videoPlayerController.value.isPlaying ? _videoPlayerController.pause() : _videoPlayerController.play();
+                            _videoPlayerController.value.isPlaying
+                                ? _videoPlayerController.pause()
+                                : _videoPlayerController.play();
                             setState(() {});
                           },
                         ),
@@ -261,17 +273,26 @@ class _ProductDetailsState extends State<ProductDetails> {
                     return Container(
                       width: 8.0,
                       height: 8.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-                      decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: _current == imgList.length ? Color(0xFF0D986A) : Color(0xFFD8D8D8)),
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 5.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _current == imgList.length
+                              ? Color(0xFF0D986A)
+                              : Color(0xFFD8D8D8)),
                     );
                   },
                   handler: (index, url) {
                     return Container(
                       width: 8.0,
                       height: 8.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: _current == index ? Color(0xFF0D986A) : Color(0xFFD8D8D8)),
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 5.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _current == index
+                              ? Color(0xFF0D986A)
+                              : Color(0xFFD8D8D8)),
                     );
                   },
                 ),
@@ -293,7 +314,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                               "${productModel.date}",
                               style: TextStyle(color: Color(0xFFACB1C0)),
                             ),
-                            Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                            Padding(
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5)),
                             Container(
                               width: 20,
                               height: 20,
@@ -308,7 +331,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     Padding(padding: EdgeInsets.only(top: 20)),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         children: <Widget>[
                           Image.asset(
@@ -329,9 +353,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -343,9 +369,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('area')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'area')}')
                             ],
                           ),
                           Text("${productModel.area} متر ")
@@ -353,9 +382,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -365,9 +396,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('front')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'front')}')
                               ],
                             ),
                             Text("${productModel.facadeName}"),
@@ -376,9 +410,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -390,9 +426,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('bedroomNumber')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'bedroomNumber')}')
                             ],
                           ),
                           Text("${productModel.numberOfRooms}")
@@ -400,9 +439,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -412,9 +453,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('bathroomNumber')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'bathroomNumber')}')
                               ],
                             ),
                             Text("${productModel.numberOfBathRooms}"),
@@ -423,9 +467,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -437,9 +483,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('lounges')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'lounges')}')
                             ],
                           ),
                           Text("${productModel.numberOfLivingRooms}")
@@ -447,9 +496,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -459,9 +510,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('streetWidth')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'streetWidth')}')
                               ],
                             ),
                             Text("${productModel.streetWidth} م "),
@@ -470,9 +524,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -484,9 +540,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('floorNumber')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'floorNumber')}')
                             ],
                           ),
                           Text("${productModel.floor}")
@@ -494,9 +553,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -506,9 +567,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   color: Color(0xFFF99743),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  padding:
+                                  EdgeInsets.symmetric(horizontal: 5),
                                 ),
-                                Text('${AppLocalizations.of(context).translate('adNumber')}')
+                                Text(
+                                    '${AppLocalizations.of(context).translate(
+                                        'adNumber')}')
                               ],
                             ),
                             Text("${productModel.id}"),
@@ -517,9 +581,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFF4F5F8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -531,9 +597,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Color(0xFFF99743),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 5),
                               ),
-                              Text('${AppLocalizations.of(context).translate('views')}')
+                              Text(
+                                  '${AppLocalizations.of(context).translate(
+                                      'views')}')
                             ],
                           ),
                           Text("${productModel.views}")
@@ -544,7 +613,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${AppLocalizations.of(context).translate('DescriptionOfTheProperty')}",
+                        "${AppLocalizations.of(context).translate(
+                            'DescriptionOfTheProperty')}",
                         style: TextStyle(color: Color(0xFF0D986A)),
                       ),
                     ),
@@ -555,9 +625,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       elevation: 1,
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -566,35 +638,58 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   scale: 3,
                                 ),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 8),
-                                      child: Text("${productModel.productCreator.name}"),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Text(
+                                          "${productModel.productCreator
+                                              .name}"),
                                     ),
-                                    Padding(padding: EdgeInsets.only(top: 5)),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 5)),
                                     Row(
                                       children: <Widget>[
                                         InkWell(
                                           onTap: () =>
                                               setState(() {
-                                                _launched = _makePhoneCall('tel:${productModel.productCreator.mobile}');
+                                                _launched = _makePhoneCall(
+                                                    'tel:${productModel
+                                                        .productCreator
+                                                        .mobile}');
                                               }),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                                              border: Border.all(color: Color(0xFFE0E0E0)),
+                                              borderRadius:
+                                              BorderRadius.all(
+                                                  Radius.circular(
+                                                      20)),
+                                              border: Border.all(
+                                                  color:
+                                                  Color(0xFFE0E0E0)),
                                             ),
-                                            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5,
+                                                vertical: 3),
                                             child: Row(
                                               children: <Widget>[
                                                 Image.asset(
                                                   'assets/icons/phoneHolder.png',
                                                   scale: 6,
-                                                  color: Color(0xFF0D986A),
+                                                  color:
+                                                  Color(0xFF0D986A),
                                                 ),
-                                                Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                                                Text("${AppLocalizations.of(context).translate('call')}"),
+                                                Padding(
+                                                    padding: EdgeInsets
+                                                        .symmetric(
+                                                        horizontal:
+                                                        5)),
+                                                Text(
+                                                    "${AppLocalizations.of(
+                                                        context).translate(
+                                                        'call')}"),
                                               ],
                                             ),
                                           ),
@@ -602,67 +697,121 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         InkWell(
                                           onTap: () {
                                             if (token.isNotEmpty) {
-                                              ChatServices().checkChatStatus(productModel.productCreator.id).then((chatStatus) {
+                                              ChatServices()
+                                                  .checkChatStatus(
+                                                  productModel
+                                                      .productCreator
+                                                      .id)
+                                                  .then((chatStatus) {
                                                 print(
                                                     '------------------>chatStatus: $chatStatus');
                                                 if (chatStatus == false)
                                                   Navigator.of(context)
-                                                      .push(MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ChatConversation(
-                                                          chatStatus,
-                                                          creatorId: productModel.productCreator.id,
-                                                          userToken: token,
-                                                          name: productModel.productCreator.name,
-                                                          photo: productModel.productCreator.photo,
-                                                        ),
-                                                  ));
+                                                      .push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ChatConversation(
+                                                              chatStatus,
+                                                              creatorId: productModel
+                                                                  .productCreator
+                                                                  .id,
+                                                              userToken: token,
+                                                              name: productModel
+                                                                  .productCreator
+                                                                  .name,
+                                                              photo: productModel
+                                                                  .productCreator
+                                                                  .photo,
+                                                            ),
+                                                      ));
                                                 else
-                                                  ChatServices().getChats().then((value) {
+                                                  ChatServices()
+                                                      .getChats()
+                                                      .then((value) {
                                                     value.forEach((room) {
-                                                      if (room.chatMembers[0].uID ==
-                                                          productModel.productCreator.id &&
-                                                          room.chatMembers[1].uID ==
+                                                      if (room.chatMembers[0]
+                                                          .uID ==
+                                                          productModel
+                                                              .productCreator
+                                                              .id &&
+                                                          room.chatMembers[1]
+                                                              .uID ==
                                                               userId ||
-                                                          room.chatMembers[1].uID ==
-                                                              productModel.productCreator.id &&
-                                                              room.chatMembers[0].uID ==
+                                                          room.chatMembers[1]
+                                                              .uID ==
+                                                              productModel
+                                                                  .productCreator
+                                                                  .id &&
+                                                              room
+                                                                  .chatMembers[0]
+                                                                  .uID ==
                                                                   userId) {
-                                                        Navigator.of(context)
-                                                            .push(MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ChatConversation(
-                                                                chatStatus,
-                                                                roomId: room.roomId,
-                                                                creatorId: productModel.productCreator.id,
-                                                                userToken: token,
-                                                                name: productModel.productCreator.name,
-                                                                photo: productModel.productCreator.photo,
-                                                              ),
-                                                        ));
+                                                        Navigator.of(
+                                                            context)
+                                                            .push(
+                                                            MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                  ChatConversation(
+                                                                    chatStatus,
+                                                                    roomId: room
+                                                                        .roomId,
+                                                                    creatorId:
+                                                                    productModel
+                                                                        .productCreator
+                                                                        .id,
+                                                                    userToken:
+                                                                    token,
+                                                                    name: productModel
+                                                                        .productCreator
+                                                                        .name,
+                                                                    photo: productModel
+                                                                        .productCreator
+                                                                        .photo,
+                                                                  ),
+                                                            ));
                                                       }
                                                     });
                                                   });
                                               });
                                             } else {
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Login()));
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder:
+                                                          (context) =>
+                                                          Login()));
                                             }
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                                              border: Border.all(color: Color(0xFFE0E0E0)),
+                                              borderRadius:
+                                              BorderRadius.all(
+                                                  Radius.circular(
+                                                      20)),
+                                              border: Border.all(
+                                                  color:
+                                                  Color(0xFFE0E0E0)),
                                             ),
-                                            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5,
+                                                vertical: 3),
                                             child: Row(
                                               children: <Widget>[
                                                 Image.asset(
                                                   'assets/icons/chat.png',
                                                   scale: 6,
-                                                  color: Color(0xFF0D986A),
+                                                  color:
+                                                  Color(0xFF0D986A),
                                                 ),
-                                                Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                                                Text("${AppLocalizations.of(context).translate('chat')}"),
+                                                Padding(
+                                                    padding: EdgeInsets
+                                                        .symmetric(
+                                                        horizontal:
+                                                        5)),
+                                                Text(
+                                                    "${AppLocalizations.of(
+                                                        context).translate(
+                                                        'chat')}"),
                                               ],
                                             ),
                                           ),
@@ -689,7 +838,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                           .size
                           .width * 0.9,
                       height: 300,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(10))),
                       child: GoogleMap(
                         mapType: MapType.normal,
                         initialCameraPosition: _kGooglePlex,
@@ -722,16 +873,20 @@ class _ProductDetailsState extends State<ProductDetails> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: productMiniModelList.length,
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 5),
                           child: InkWell(
                             onTap: () {
-                              PostViews().postViews(productMiniModelList[index].id);
-                              Navigator.of(context).push(MaterialPageRoute(
+                              PostViews().postViews(
+                                  productMiniModelList[index].id);
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
                                 builder: (context) =>
-                                    ProductDetails(productMiniModelList[index].id),
+                                    ProductDetails(
+                                        productMiniModelList[index].id),
                               ));
                             },
                             child: HomeCard(
@@ -739,12 +894,19 @@ class _ProductDetailsState extends State<ProductDetails> {
                               title: productMiniModelList[index].title,
                               price: productMiniModelList[index].price,
                               size: productMiniModelList[index].size,
-                              time: productMiniModelList[index].time,
+                              time: Localizations
+                                  .localeOf(context)
+                                  .languageCode ==
+                                  "en"
+                                  ? productMiniModelList[index].timeEn
+                                  : productMiniModelList[index].timeAr,
                               numberOfRooms: productMiniModelList[index]
                                   .numberOfRooms,
-                              numberOfBathRooms: productMiniModelList[index]
+                              numberOfBathRooms:
+                              productMiniModelList[index]
                                   .numberOfBathRooms,
-                              address: productMiniModelList[index].address,
+                              address:
+                              productMiniModelList[index].address,
                               photo: productMiniModelList[index].photo,
                               categoryColor: productMiniModelList[index]
                                   .categoryColor,
@@ -754,11 +916,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                       },
                     ),
 
-
-                    Padding(padding: EdgeInsets.only(top: MediaQuery
-                        .of(context)
-                        .padding
-                        .top)),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery
+                                .of(context)
+                                .padding
+                                .top)),
                   ],
                 ),
               )

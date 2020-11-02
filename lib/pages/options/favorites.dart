@@ -298,7 +298,11 @@ class _FavoritesState extends State<Favorites> {
                                     title: productMiniModelList[index].title,
                                     price: productMiniModelList[index].price,
                                     size: productMiniModelList[index].size,
-                                    time: productMiniModelList[index].time,
+                                    time: Localizations.localeOf(context)
+                                                .languageCode ==
+                                            "en"
+                                        ? productMiniModelList[index].timeEn
+                                        : productMiniModelList[index].timeAr,
                                     numberOfRooms: productMiniModelList[index]
                                         .numberOfRooms,
                                     numberOfBathRooms:
