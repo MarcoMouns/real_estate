@@ -277,12 +277,14 @@ class _HomeState extends State<Home> {
 
   String fullName;
   String token = "";
+  String photo;
 
   getName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? "";
     if (token.isNotEmpty) {
       fullName = prefs.getString('name');
+      photo = prefs.getString('photo');
       print(token);
     }
     setState(() {
@@ -877,10 +879,15 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: <Widget>[
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                    Image.asset(
-                      'assets/images/person.png',
-                      scale: 5,
-                    ),
+                    photo == null
+                        ? Image.asset(
+                            'assets/images/person.png',
+                            scale: 5,
+                          )
+                        : CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(photo),
+                          ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
                     Text('${fullName ?? "مستخدم جديد"}'),
                   ],

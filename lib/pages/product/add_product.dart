@@ -232,7 +232,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
         Scaffold.of(context).showSnackBar(snackBar);
         setState(() {});
-        Navigator.of(context).push(MaterialPageRoute(
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => Home(),
         ));
       } else {
